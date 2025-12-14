@@ -176,6 +176,183 @@ class EIAAPIClient:
         if hasattr(self, 'session'):
             self.session.close()
     
+    def _validate_date_format(self, date_str: str, param_name: str = "date") -> datetime:
+        """
+        Validate date string format and convert to datetime.
+        
+        Args:
+            date_str: Date string to validate
+            param_name: Parameter name for error messages
+            
+        Returns:
+            datetime object
+            
+        Raises:
+            ValueError: If date format is invalid
+        """
+        try:
+            return datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid {param_name} format: '{date_str}'. "
+                f"Expected YYYY-MM-DD. Error: {e}"
+            )
+    
+    def _validate_date_range(self, start_date: str, end_date: str) -> tuple[datetime, datetime]:
+        """
+        Validate date range.
+        
+        Args:
+            start_date: Start date in YYYY-MM-DD format
+            end_date: End date in YYYY-MM-DD format
+            
+        Returns:
+            Tuple of (start_datetime, end_datetime)
+            
+        Raises:
+            ValueError: If dates are invalid or range is invalid
+        """
+        start_dt = self._validate_date_format(start_date, "start_date")
+        end_dt = self._validate_date_format(end_date, "end_date")
+        
+        if start_dt > end_dt:
+            raise ValueError(
+                f"Start date ({start_date}) must be before or equal to end date ({end_date})"
+            )
+        
+        if end_dt > datetime.now():
+            logger.warning(
+                f"End date ({end_date}) is in the future. "
+                "API will return data up to the most recent available date."
+            )
+        
+        return start_dt, end_dt
+    
+    def _normalize_response(
+        self,
+        raw_data: Dict[str, Any],
+        commodity: str
+    ) -> pd.DataFrame:
+        """
+        Normalize EIA API response to standard DataFrame format.
+        
+        Args:
+            raw_data: Raw API response dictionary
+            commodity: Commodity name for logging
+            
+        Returns:
+            Normalized DataFrame with columns: [date, price]
+            - date: pandas Timestamp (timezone-naive, assuming US Eastern)
+            - price: float
+            
+        Raises:
+            ValueError: If response structure is invalid
+        """
+        # Validate response structure
+        if not raw_data or not isinstance(raw_data, dict):
+            logger.error(f"Invalid API response for {commodity}: not a dictionary")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        if "response" not in raw_data:
+            logger.error(f"Invalid API response for {commodity}: missing 'response' key")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        data_records = raw_data.get("response", {}).get("data", [])
+        
+        if not data_records:
+            logger.warning(f"No data returned for {commodity}")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        if not isinstance(data_records, list):
+            logger.error(f"Invalid API response for {commodity}: 'data' is not a list")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        logger.info(f"Retrieved {len(data_records)} {commodity} price records")
+        
+        # Convert to DataFrame
+        try:
+            df = pd.DataFrame(data_records)
+        except Exception as e:
+            logger.error(f"Failed to convert {commodity} data to DataFrame: {e}")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        # Validate required columns
+        if "period" not in df.columns or "value" not in df.columns:
+            logger.error(
+                f"Invalid {commodity} response format. "
+                f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
+            )
+            return pd.DataFrame(columns=["date", "price"])
+        
+        # Extract and rename columns
+        df = df[["period", "value"]].copy()
+        df.columns = ["date", "price"]
+        
+        # Validate and convert data types
+        df = self._validate_and_convert_types(df, commodity)
+        
+        # Sort by date and reset index
+        df = df.sort_values("date").reset_index(drop=True)
+        
+        logger.info(
+            f"Successfully normalized {len(df)} {commodity} records. "
+            f"Date range: {df['date'].min()} to {df['date'].max()}"
+        )
+        
+        return df
+    
+    def _validate_and_convert_types(
+        self,
+        df: pd.DataFrame,
+        commodity: str
+    ) -> pd.DataFrame:
+        """
+        Validate and convert DataFrame column types.
+        
+        Args:
+            df: DataFrame with 'date' and 'price' columns
+            commodity: Commodity name for logging
+            
+        Returns:
+            DataFrame with validated and converted types
+        """
+        # Convert date to datetime
+        try:
+            df["date"] = pd.to_datetime(df["date"])
+        except Exception as e:
+            logger.error(f"Failed to convert {commodity} dates to datetime: {e}")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        # Convert price to numeric, coercing errors to NaN
+        df["price"] = pd.to_numeric(df["price"], errors="coerce")
+        
+        # Check for NaN prices
+        nan_count = df["price"].isna().sum()
+        if nan_count > 0:
+            logger.warning(
+                f"Found {nan_count} invalid/missing prices in {commodity} data. "
+                "These records will be dropped."
+            )
+            df = df.dropna(subset=["price"])
+        
+        # Validate price range (should be positive)
+        negative_prices = df[df["price"] < 0]
+        if len(negative_prices) > 0:
+            logger.warning(
+                f"Found {len(negative_prices)} negative prices in {commodity} data. "
+                "These may indicate data issues."
+            )
+        
+        # Check for zero prices (unusual for commodities)
+        zero_prices = df[df["price"] == 0]
+        if len(zero_prices) > 0:
+            logger.warning(
+                f"Found {len(zero_prices)} zero prices in {commodity} data. "
+                "This may indicate missing data."
+            )
+        
+        return df
+    
     def fetch_wti_prices(
         self,
         start_date: str,
@@ -205,26 +382,8 @@ class EIAAPIClient:
             0 2023-01-01  80.26
             1 2023-01-02  80.50
         """
-        # Validate date format
-        try:
-            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
-        except ValueError as e:
-            raise ValueError(
-                f"Invalid date format. Use YYYY-MM-DD. Error: {e}"
-            )
-        
-        # Validate date range
-        if start_dt > end_dt:
-            raise ValueError(
-                f"Start date ({start_date}) must be before end date ({end_date})"
-            )
-        
-        if end_dt > datetime.now():
-            logger.warning(
-                f"End date ({end_date}) is in the future. "
-                "API will return data up to today."
-            )
+        # Validate dates using helper method
+        self._validate_date_range(start_date, end_date)
         
         logger.info(
             f"Fetching WTI crude oil prices from {start_date} to {end_date}"
@@ -250,53 +409,8 @@ class EIAAPIClient:
         # Make API request with retry logic
         response_data = self._make_request_with_retry(endpoint, params)
         
-        # Parse response
-        if not response_data or "response" not in response_data:
-            logger.error("Invalid API response structure")
-            return pd.DataFrame(columns=["date", "price"])
-        
-        data_records = response_data.get("response", {}).get("data", [])
-        
-        if not data_records:
-            logger.warning(
-                f"No data returned for WTI prices between {start_date} and {end_date}"
-            )
-            return pd.DataFrame(columns=["date", "price"])
-        
-        logger.info(f"Retrieved {len(data_records)} WTI price records")
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(data_records)
-        
-        # Extract relevant columns and rename
-        if "period" in df.columns and "value" in df.columns:
-            df = df[["period", "value"]].copy()
-            df.columns = ["date", "price"]
-            
-            # Convert date to datetime
-            df["date"] = pd.to_datetime(df["date"])
-            
-            # Convert price to float
-            df["price"] = pd.to_numeric(df["price"], errors="coerce")
-            
-            # Drop any rows with NaN prices
-            df = df.dropna(subset=["price"])
-            
-            # Sort by date ascending
-            df = df.sort_values("date").reset_index(drop=True)
-            
-            logger.info(
-                f"Successfully processed {len(df)} WTI price records. "
-                f"Date range: {df['date'].min()} to {df['date'].max()}"
-            )
-            
-            return df
-        else:
-            logger.error(
-                f"Unexpected API response format. "
-                f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
-            )
-            return pd.DataFrame(columns=["date", "price"])
+        # Normalize and validate response using helper method
+        return self._normalize_response(response_data, "WTI crude oil")
     
     def fetch_natural_gas_prices(
         self,
@@ -327,26 +441,8 @@ class EIAAPIClient:
             0 2023-01-01  3.15
             1 2023-01-02  3.20
         """
-        # Validate date format
-        try:
-            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
-        except ValueError as e:
-            raise ValueError(
-                f"Invalid date format. Use YYYY-MM-DD. Error: {e}"
-            )
-        
-        # Validate date range
-        if start_dt > end_dt:
-            raise ValueError(
-                f"Start date ({start_date}) must be before end date ({end_date})"
-            )
-        
-        if end_dt > datetime.now():
-            logger.warning(
-                f"End date ({end_date}) is in the future. "
-                "API will return data up to today."
-            )
+        # Validate dates using helper method
+        self._validate_date_range(start_date, end_date)
         
         logger.info(
             f"Fetching Henry Hub natural gas prices from {start_date} to {end_date}"
@@ -372,53 +468,8 @@ class EIAAPIClient:
         # Make API request with retry logic
         response_data = self._make_request_with_retry(endpoint, params)
         
-        # Parse response
-        if not response_data or "response" not in response_data:
-            logger.error("Invalid API response structure")
-            return pd.DataFrame(columns=["date", "price"])
-        
-        data_records = response_data.get("response", {}).get("data", [])
-        
-        if not data_records:
-            logger.warning(
-                f"No data returned for natural gas prices between {start_date} and {end_date}"
-            )
-            return pd.DataFrame(columns=["date", "price"])
-        
-        logger.info(f"Retrieved {len(data_records)} natural gas price records")
-        
-        # Convert to DataFrame
-        df = pd.DataFrame(data_records)
-        
-        # Extract relevant columns and rename
-        if "period" in df.columns and "value" in df.columns:
-            df = df[["period", "value"]].copy()
-            df.columns = ["date", "price"]
-            
-            # Convert date to datetime
-            df["date"] = pd.to_datetime(df["date"])
-            
-            # Convert price to float
-            df["price"] = pd.to_numeric(df["price"], errors="coerce")
-            
-            # Drop any rows with NaN prices
-            df = df.dropna(subset=["price"])
-            
-            # Sort by date ascending
-            df = df.sort_values("date").reset_index(drop=True)
-            
-            logger.info(
-                f"Successfully processed {len(df)} natural gas price records. "
-                f"Date range: {df['date'].min()} to {df['date'].max()}"
-            )
-            
-            return df
-        else:
-            logger.error(
-                f"Unexpected API response format. "
-                f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
-            )
-            return pd.DataFrame(columns=["date", "price"])
+        # Normalize and validate response using helper method
+        return self._normalize_response(response_data, "Henry Hub natural gas")
 
 
 # Example usage

@@ -38,11 +38,11 @@ class EIAAPIClient:
     
     BASE_URL = "https://api.eia.gov/v2"
     
-    # Series IDs for different commodities
+    # Series IDs for different commodities (v2 API format)
     SERIES_IDS = {
-        "WTI": "PET.RWTC.D",  # WTI Crude Oil Spot Price
-        "BRENT": "PET.RBRTE.D",  # Brent Crude Oil Spot Price (if available)
-        "NATURAL_GAS": "NG.RNGWHHD.D",  # Henry Hub Natural Gas Spot Price
+        "WTI": "RWTC",  # WTI Crude Oil Spot Price (Cushing, OK)
+        "BRENT": "RBRTE",  # Brent Crude Oil Spot Price (Europe)
+        "NATURAL_GAS": "RNGWHHD",  # Henry Hub Natural Gas Spot Price
     }
     
     def __init__(self, api_key: Optional[str] = None):
@@ -284,9 +284,13 @@ class EIAAPIClient:
             )
             return pd.DataFrame(columns=["date", "price"])
         
-        # Extract and rename columns
-        df = df[["period", "value"]].copy()
-        df.columns = ["date", "price"]
+        # Extract columns (keep 'series' if it exists for filtering)
+        columns_to_keep = ["period", "value"]
+        if "series" in df.columns:
+            columns_to_keep.append("series")
+        
+        df = df[columns_to_keep].copy()
+        df = df.rename(columns={"period": "date", "value": "price"})
         
         # Validate and convert data types
         df = self._validate_and_convert_types(df, commodity)
@@ -393,11 +397,12 @@ class EIAAPIClient:
         series_id = self.SERIES_IDS["WTI"]
         endpoint = f"petroleum/pri/spt/data/"
         
-        # Prepare query parameters
+        # Prepare query parameters (v2 API structure)
+        # Note: Using data[] without facets[series] and filtering post-fetch
+        # because facets[series][] filter returns empty results as of Dec 2024
         params = {
             "frequency": "daily",
-            "data[0]": "value",
-            "facets[series][]": series_id,
+            "data[]": "value",
             "start": start_date,
             "end": end_date,
             "sort[0][column]": "period",
@@ -409,8 +414,16 @@ class EIAAPIClient:
         # Make API request with retry logic
         response_data = self._make_request_with_retry(endpoint, params)
         
-        # Normalize and validate response using helper method
-        return self._normalize_response(response_data, "WTI crude oil")
+        # Normalize and validate response, filtering for WTI series
+        df = self._normalize_response(response_data, "WTI crude oil")
+        
+        # Filter for WTI series only (since API returns all series)
+        if not df.empty and "series" in df.columns:
+            df = df[df["series"] == series_id].copy()
+            df = df.drop(columns=["series"], errors="ignore")  # Remove series column after filtering
+            logger.info(f"Filtered to {len(df)} WTI crude oil records")
+        
+        return df
     
     def fetch_natural_gas_prices(
         self,
@@ -420,19 +433,23 @@ class EIAAPIClient:
         """
         Fetch Henry Hub Natural Gas spot prices from EIA.
         
+        **NOTE**: As of December 2024, EIA's Natural Gas API only provides monthly/annual data,
+        NOT daily data. For daily natural gas prices, use the FRED API (series: DHHNGSP) or
+        Yahoo Finance (ticker: NG=F) instead.
+        
+        This method is kept for API consistency but will return an empty DataFrame with a warning.
+        
         Args:
             start_date: Start date in YYYY-MM-DD format
             end_date: End date in YYYY-MM-DD format
             
         Returns:
             DataFrame with columns: [date, price]
-            - date: pandas datetime
-            - price: float (dollars per million BTU)
+            Currently returns empty DataFrame as daily natural gas data is not available from EIA.
             
         Raises:
             ValueError: If date format is invalid or date range is invalid
-            requests.HTTPError: If API request fails
-            
+        
         Example:
             >>> client = EIAAPIClient(api_key="your_key")
             >>> df = client.fetch_natural_gas_prices("2023-01-01", "2023-12-31")
@@ -444,32 +461,14 @@ class EIAAPIClient:
         # Validate dates using helper method
         self._validate_date_range(start_date, end_date)
         
-        logger.info(
-            f"Fetching Henry Hub natural gas prices from {start_date} to {end_date}"
+        logger.warning(
+            "EIA API does not provide daily Natural Gas spot prices. "
+            "Natural Gas endpoint only supports 'monthly' and 'annual' frequencies. "
+            "Recommendation: Use FRED API (series: DHHNGSP) or Yahoo Finance (ticker: NG=F) "
+            "for daily natural gas price data."
         )
         
-        # Build API endpoint for Natural Gas series
-        series_id = self.SERIES_IDS["NATURAL_GAS"]
-        endpoint = f"natural-gas/pri/spt/data/"
-        
-        # Prepare query parameters
-        params = {
-            "frequency": "daily",
-            "data[0]": "value",
-            "facets[series][]": series_id,
-            "start": start_date,
-            "end": end_date,
-            "sort[0][column]": "period",
-            "sort[0][direction]": "asc",
-            "offset": 0,
-            "length": 5000  # Max records per request
-        }
-        
-        # Make API request with retry logic
-        response_data = self._make_request_with_retry(endpoint, params)
-        
-        # Normalize and validate response using helper method
-        return self._normalize_response(response_data, "Henry Hub natural gas")
+        return pd.DataFrame(columns=["date", "price"])
 
 
 # Example usage

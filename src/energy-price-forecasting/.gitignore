@@ -57,6 +57,11 @@ mlruns/
 data/*.csv
 data/*.parquet
 
+# Example outputs (generated CSV files)
+examples/*.csv
+examples/*.json
+examples/*.xlsx
+
 # Logs
 *.log
 logs/

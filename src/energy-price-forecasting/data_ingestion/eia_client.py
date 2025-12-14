@@ -13,6 +13,7 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 
 import requests
+import pandas as pd
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 # Configure logging
@@ -174,14 +175,148 @@ class EIAAPIClient:
         """Destructor to ensure session is closed."""
         if hasattr(self, 'session'):
             self.session.close()
+    
+    def fetch_wti_prices(
+        self,
+        start_date: str,
+        end_date: str
+    ) -> pd.DataFrame:
+        """
+        Fetch WTI Crude Oil spot prices from EIA.
+        
+        Args:
+            start_date: Start date in YYYY-MM-DD format
+            end_date: End date in YYYY-MM-DD format
+            
+        Returns:
+            DataFrame with columns: [date, price]
+            - date: pandas datetime
+            - price: float (dollars per barrel)
+            
+        Raises:
+            ValueError: If date format is invalid or date range is invalid
+            requests.HTTPError: If API request fails
+            
+        Example:
+            >>> client = EIAAPIClient(api_key="your_key")
+            >>> df = client.fetch_wti_prices("2023-01-01", "2023-12-31")
+            >>> print(df.head())
+                  date  price
+            0 2023-01-01  80.26
+            1 2023-01-02  80.50
+        """
+        # Validate date format
+        try:
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid date format. Use YYYY-MM-DD. Error: {e}"
+            )
+        
+        # Validate date range
+        if start_dt > end_dt:
+            raise ValueError(
+                f"Start date ({start_date}) must be before end date ({end_date})"
+            )
+        
+        if end_dt > datetime.now():
+            logger.warning(
+                f"End date ({end_date}) is in the future. "
+                "API will return data up to today."
+            )
+        
+        logger.info(
+            f"Fetching WTI crude oil prices from {start_date} to {end_date}"
+        )
+        
+        # Build API endpoint for WTI series
+        series_id = self.SERIES_IDS["WTI"]
+        endpoint = f"petroleum/pri/spt/data/"
+        
+        # Prepare query parameters
+        params = {
+            "frequency": "daily",
+            "data[0]": "value",
+            "facets[series][]": series_id,
+            "start": start_date,
+            "end": end_date,
+            "sort[0][column]": "period",
+            "sort[0][direction]": "asc",
+            "offset": 0,
+            "length": 5000  # Max records per request
+        }
+        
+        # Make API request with retry logic
+        response_data = self._make_request_with_retry(endpoint, params)
+        
+        # Parse response
+        if not response_data or "response" not in response_data:
+            logger.error("Invalid API response structure")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        data_records = response_data.get("response", {}).get("data", [])
+        
+        if not data_records:
+            logger.warning(
+                f"No data returned for WTI prices between {start_date} and {end_date}"
+            )
+            return pd.DataFrame(columns=["date", "price"])
+        
+        logger.info(f"Retrieved {len(data_records)} WTI price records")
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(data_records)
+        
+        # Extract relevant columns and rename
+        if "period" in df.columns and "value" in df.columns:
+            df = df[["period", "value"]].copy()
+            df.columns = ["date", "price"]
+            
+            # Convert date to datetime
+            df["date"] = pd.to_datetime(df["date"])
+            
+            # Convert price to float
+            df["price"] = pd.to_numeric(df["price"], errors="coerce")
+            
+            # Drop any rows with NaN prices
+            df = df.dropna(subset=["price"])
+            
+            # Sort by date ascending
+            df = df.sort_values("date").reset_index(drop=True)
+            
+            logger.info(
+                f"Successfully processed {len(df)} WTI price records. "
+                f"Date range: {df['date'].min()} to {df['date'].max()}"
+            )
+            
+            return df
+        else:
+            logger.error(
+                f"Unexpected API response format. "
+                f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
+            )
+            return pd.DataFrame(columns=["date", "price"])
 
 
 # Example usage
 if __name__ == "__main__":
-    # This will be expanded in subsequent stories
+    # Example: Fetch WTI prices
     try:
+        from dotenv import load_dotenv
+        load_dotenv()  # Load .env file
+        
         client = EIAAPIClient()
-        logger.info("EIA API Client test successful")
+        logger.info("EIA API Client initialized successfully")
+        
+        # Fetch recent WTI prices
+        df = client.fetch_wti_prices("2024-01-01", "2024-01-31")
+        print(f"\nFetched {len(df)} WTI price records")
+        print(df.head())
+        print(f"\nPrice range: ${df['price'].min():.2f} - ${df['price'].max():.2f}")
+        
     except ValueError as e:
         logger.error(f"Failed to initialize client: {e}")
+    except Exception as e:
+        logger.error(f"Error: {e}")
 

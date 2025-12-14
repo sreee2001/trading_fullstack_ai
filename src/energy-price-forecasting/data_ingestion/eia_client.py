@@ -297,11 +297,133 @@ class EIAAPIClient:
                 f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
             )
             return pd.DataFrame(columns=["date", "price"])
+    
+    def fetch_natural_gas_prices(
+        self,
+        start_date: str,
+        end_date: str
+    ) -> pd.DataFrame:
+        """
+        Fetch Henry Hub Natural Gas spot prices from EIA.
+        
+        Args:
+            start_date: Start date in YYYY-MM-DD format
+            end_date: End date in YYYY-MM-DD format
+            
+        Returns:
+            DataFrame with columns: [date, price]
+            - date: pandas datetime
+            - price: float (dollars per million BTU)
+            
+        Raises:
+            ValueError: If date format is invalid or date range is invalid
+            requests.HTTPError: If API request fails
+            
+        Example:
+            >>> client = EIAAPIClient(api_key="your_key")
+            >>> df = client.fetch_natural_gas_prices("2023-01-01", "2023-12-31")
+            >>> print(df.head())
+                  date  price
+            0 2023-01-01  3.15
+            1 2023-01-02  3.20
+        """
+        # Validate date format
+        try:
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid date format. Use YYYY-MM-DD. Error: {e}"
+            )
+        
+        # Validate date range
+        if start_dt > end_dt:
+            raise ValueError(
+                f"Start date ({start_date}) must be before end date ({end_date})"
+            )
+        
+        if end_dt > datetime.now():
+            logger.warning(
+                f"End date ({end_date}) is in the future. "
+                "API will return data up to today."
+            )
+        
+        logger.info(
+            f"Fetching Henry Hub natural gas prices from {start_date} to {end_date}"
+        )
+        
+        # Build API endpoint for Natural Gas series
+        series_id = self.SERIES_IDS["NATURAL_GAS"]
+        endpoint = f"natural-gas/pri/spt/data/"
+        
+        # Prepare query parameters
+        params = {
+            "frequency": "daily",
+            "data[0]": "value",
+            "facets[series][]": series_id,
+            "start": start_date,
+            "end": end_date,
+            "sort[0][column]": "period",
+            "sort[0][direction]": "asc",
+            "offset": 0,
+            "length": 5000  # Max records per request
+        }
+        
+        # Make API request with retry logic
+        response_data = self._make_request_with_retry(endpoint, params)
+        
+        # Parse response
+        if not response_data or "response" not in response_data:
+            logger.error("Invalid API response structure")
+            return pd.DataFrame(columns=["date", "price"])
+        
+        data_records = response_data.get("response", {}).get("data", [])
+        
+        if not data_records:
+            logger.warning(
+                f"No data returned for natural gas prices between {start_date} and {end_date}"
+            )
+            return pd.DataFrame(columns=["date", "price"])
+        
+        logger.info(f"Retrieved {len(data_records)} natural gas price records")
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(data_records)
+        
+        # Extract relevant columns and rename
+        if "period" in df.columns and "value" in df.columns:
+            df = df[["period", "value"]].copy()
+            df.columns = ["date", "price"]
+            
+            # Convert date to datetime
+            df["date"] = pd.to_datetime(df["date"])
+            
+            # Convert price to float
+            df["price"] = pd.to_numeric(df["price"], errors="coerce")
+            
+            # Drop any rows with NaN prices
+            df = df.dropna(subset=["price"])
+            
+            # Sort by date ascending
+            df = df.sort_values("date").reset_index(drop=True)
+            
+            logger.info(
+                f"Successfully processed {len(df)} natural gas price records. "
+                f"Date range: {df['date'].min()} to {df['date'].max()}"
+            )
+            
+            return df
+        else:
+            logger.error(
+                f"Unexpected API response format. "
+                f"Expected 'period' and 'value' columns, got: {df.columns.tolist()}"
+            )
+            return pd.DataFrame(columns=["date", "price"])
 
 
 # Example usage
 if __name__ == "__main__":
-    # Example: Fetch WTI prices
+    # Example: Fetch WTI and Natural Gas prices
     try:
         from dotenv import load_dotenv
         load_dotenv()  # Load .env file
@@ -310,10 +432,22 @@ if __name__ == "__main__":
         logger.info("EIA API Client initialized successfully")
         
         # Fetch recent WTI prices
-        df = client.fetch_wti_prices("2024-01-01", "2024-01-31")
-        print(f"\nFetched {len(df)} WTI price records")
-        print(df.head())
-        print(f"\nPrice range: ${df['price'].min():.2f} - ${df['price'].max():.2f}")
+        print("\n" + "="*70)
+        print("WTI CRUDE OIL PRICES")
+        print("="*70)
+        wti_df = client.fetch_wti_prices("2024-01-01", "2024-01-31")
+        print(f"\nFetched {len(wti_df)} WTI price records")
+        print(wti_df.head())
+        print(f"Price range: ${wti_df['price'].min():.2f} - ${wti_df['price'].max():.2f}")
+        
+        # Fetch recent Natural Gas prices
+        print("\n" + "="*70)
+        print("HENRY HUB NATURAL GAS PRICES")
+        print("="*70)
+        ng_df = client.fetch_natural_gas_prices("2024-01-01", "2024-01-31")
+        print(f"\nFetched {len(ng_df)} natural gas price records")
+        print(ng_df.head())
+        print(f"Price range: ${ng_df['price'].min():.2f} - ${ng_df['price'].max():.2f}")
         
     except ValueError as e:
         logger.error(f"Failed to initialize client: {e}")

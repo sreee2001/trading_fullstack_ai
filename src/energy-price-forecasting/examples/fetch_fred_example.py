@@ -39,7 +39,7 @@ def main():
     """Fetch and display commodity price data from FRED with caching demonstration."""
     try:
         # Initialize client with 5-minute cache
-        client = FREDAPIClient(cache_ttl_seconds=300)
+        client = FREDAPIClient(cache_ttl_minutes=5)
         
         # Define series to fetch
         series = {
@@ -72,7 +72,7 @@ def main():
         print(f"   Cache Hits: {stats['hits']}")
         print(f"   Cache Misses: {stats['misses']}")
         print(f"   Hit Rate: {stats['hit_rate_percent']}%")
-        print(f"   Cache Size: {stats['current_size']}/{stats['max_size']}")
+        print(f"   Cache Size: {stats['cache_size']}")
         
         # Second fetch - should be cache hits
         print("\n" + "="*70)
@@ -90,7 +90,7 @@ def main():
         print(f"   Cache Hits: {stats['hits']} (increased)")
         print(f"   Cache Misses: {stats['misses']}")
         print(f"   Hit Rate: {stats['hit_rate_percent']}%")
-        print(f"   Cache Size: {stats['current_size']}/{stats['max_size']}")
+        print(f"   Cache Size: {stats['cache_size']}")
         
         # Display sample data for WTI
         print("\n" + "="*70)

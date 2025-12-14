@@ -1,0 +1,89 @@
+Given this Job Description
+
+Tell me how to show few projects that show case my skills in this tech area
+try to list all technologies and possible projects
+
+--------------
+About the job
+BASIC PURPOSE: As a Software Engineer (AI) supporting Musket Corp.’s energy trade floor (specializing in refined products), you will design and develop advanced AI-driven tools that enhance trading performance, automate workflows, and unlock market insights. If you’re passionate about applying AI and software engineering to real-world trading challenges—and thrive in a fast-paced, high-impact environment—we encourage you to apply.
+
+Major Responsibilities
+
+AI-Driven Trading Solutions
+
+Develop, deploy, and maintain AI and machine learning applications that support refined products trading strategies, including market forecasting, arbitrage detection, and price correlation modeling. 
+Integrate AI models into trading tools and dashboards to improve decision-making speed, market visibility, and risk assessment. 
+Design scalable applications that leverage real-time and historical data to support position management, inventory optimization, and trade execution efficiency. 
+
+Software Development & Systems Integration
+
+Write clean, efficient, and scalable code across the full stack to build production-grade applications used by trading, analytics, and operations teams. 
+Collaborate with analytics team to optimize data pipelines, integrate APIs, and enhance system performance. 
+Implement solutions that interface with trading platforms, market data providers, and internal analytics environments. 
+
+Innovation & Continuous Improvement
+
+Stay current with advancements in AI, machine learning, and data engineering, identifying opportunities to apply emerging technologies within trading workflows. 
+Prototype and test new approaches to automation, data visualization, and predictive modeling that deliver measurable trading value. 
+Partner with traders and analysts to translate business requirements into scalable, high-impact technical solutions. 
+
+Other duties assigned as needed.
+
+Education
+
+EUCATION AND EXPERIENCE:
+
+Bachelor’s degree in Computer Science, Engineering, or a related technical discipline required. 
+Advanced degree (Master’s or PhD) in AI, Machine Learning, or Data Science preferred
+
+Experience
+
+Proven experience in software development (front-end, back-end, or full-stack). 
+Hands-on experience with AI/ML frameworks (TensorFlow, PyTorch, scikit-learn, etc.) and data processing libraries (Pandas, NumPy). 
+Exposure to energy trading, commodity markets, or financial systems. 
+Experience integrating data from market feeds, trade capture systems, or real-time analytics platforms 
+
+Skills
+
+SKILLS AND PHYSICAL DEMANDS:
+
+Technical Skills
+
+Expertise in the following programming languages: Python, Java, C#, C++, JavaScript/TypeScript, SQL.
+Strong understanding of AI/ML model development, training, and deployment. 
+Familiarity with cloud technologies (AWS, Azure, GCP) and modern DevOps practices. 
+Ability to design and deliver scalable, secure, and high-performance applications in data-rich environments. 
+
+Soft Skills
+
+Strong curiosity about market dynamics, trading operations, and commercial problem-solving. 
+Analytical mindset with high attention to detail and code quality. 
+Effective communicator who can translate complex technical ideas into business value. 
+Collaborative and adaptable, comfortable working in a fast-paced, trading-oriented culture. 
+
+Typical Physical Demands
+
+Requires prolonged sitting, some bending and stooping. 
+Occasional lifting up to 25 pounds. 
+Manual dexterity sufficient to operate a computer keyboard and calculator. 
+Requires normal range of hearing and vision. 
+
+Why Join Us
+
+Cutting-Edge Environment: Be part of a forward-thinking team leveraging the latest technologies to drive business success.
+Collaborative Culture: Work alongside data scientists, analysts, and business partners, fostering creativity and innovation.
+Continuous Learning: Engage with a diverse range of projects and technologies, expanding your skills and expertise
+
+#Musket
+
+Job Function(s): Musket
+
+Love’s has been fueling customers’ journeys since 1964. Innovation and perseverance continue to lead the way for the family-owned and -operated business headquartered in Oklahoma City with more than 40,000 team members in North America and Europe. The company’s core business is travel stops and convenience stores with more than 630 locations in 42 states. Love’s continues its commitment to offer products and services that provide value for professional drivers, fleets, four-wheel customers, RVers, alternative fuel and wholesale fuel customers. Giving back to communities Love’s serves and maintaining an inclusive and diverse workplace are hallmarks of the company’s award-winning culture. 
+
+The Love’s Family Of Companies Includes
+
+Gemini Motor Transport, one of the industry’s safest trucking fleets.
+Speedco and Love’s Truck Care, the largest oil change and preventive maintenance and total truck care network.
+Musket, a rapidly growing, Houston-based commodities supplier and trader.
+Trillium, a Houston-based alternative fuels expert.
+TVC Pro-driver, a commercial driver’s license (CDL) protection subscription service.

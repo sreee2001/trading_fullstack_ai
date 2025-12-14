@@ -8,6 +8,7 @@ python-dotenv==1.0.0
 requests==2.31.0
 pandas>=2.2.0  # Compatible with Python 3.13
 numpy>=1.26.0  # Compatible with Python 3.13
+yfinance>=0.2.30  # Yahoo Finance data
 
 # Database (using psycopg3 for Python 3.13 compatibility)
 psycopg[binary]>=3.1.0  # Python 3.13 compatible alternative to psycopg2

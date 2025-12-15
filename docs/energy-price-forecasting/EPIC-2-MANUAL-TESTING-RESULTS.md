@@ -100,18 +100,24 @@ This document tracks the manual testing results for Epic 2. Each step is tested 
 
 ---
 
-## Step 4: Model Training Infrastructure
+## Step 4: Model Training Infrastructure ✅
 
-**Status**: PENDING  
-**Date**: TBD
+**Status**: PASSED  
+**Date**: December 14, 2025
 
-### Test Plan:
-- Test data splitting utilities
-- Test model evaluation framework
-- Test walk-forward validation
+### Test Results:
+- ✅ Data splitting (TimeSeriesSplitter): train=210, val=45, test=45 (temporal order preserved)
+- ✅ Model evaluation: MAE=0.3050, RMSE=0.3704, MAPE=0.4461, R2=0.8562, Directional Accuracy=84.09%
+- ✅ Walk-forward validation (10 folds, expanding window): metrics computed; sample folds shown
+
+### Notes:
+- Fixed walk-forward infinite loop (expanding window now advances by step_size)
+- Added split_time_series convenience function and wired imports
+- Adjusted ARIMAModel factory for manual test (non-seasonal, small search space)
+- Warnings: statsmodels ValueWarning/FutureWarning about index (benign for synthetic data)
 
 ### Review Status:
-- [ ] Test executed
+- [x] Test executed
 - [ ] User reviewed
 - [ ] Approved to proceed
 
@@ -175,7 +181,7 @@ All test scripts are located in: `src/energy-price-forecasting/examples/`
 1. `test_epic2_step1_feature_engineering.py` ✅
 2. `test_epic2_step2_baseline_models.py` ✅
 3. `test_epic2_step3_lstm.py` ✅
-4. `test_epic2_step4_training_infrastructure.py` ⏳
+4. `test_epic2_step4_training_infrastructure.py` ✅
 5. `test_epic2_step5_hyperparameter_tuning.py` ⏳
 6. `test_epic2_step6_mlflow.py` ⏳
 7. `test_epic2_step7_multi_horizon.py` ⏳

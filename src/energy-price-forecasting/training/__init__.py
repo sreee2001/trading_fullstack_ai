@@ -9,7 +9,7 @@ Date: December 14, 2025
 Version: 1.0
 """
 
-from .data_splitting import TimeSeriesSplitter
+from .data_splitting import TimeSeriesSplitter, split_time_series
 from .evaluation import ModelEvaluator
 from .cross_validation import TimeSeriesCrossValidator
 from .training_pipeline import TrainingPipeline
@@ -19,6 +19,7 @@ __version__ = "1.0.0"
 
 __all__ = [
     'TimeSeriesSplitter',
+    'split_time_series',
     'ModelEvaluator',
     'TimeSeriesCrossValidator',
     'TrainingPipeline',

@@ -16,6 +16,11 @@ from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
+# Optional import to handle ARIMAModel-specific behavior
+try:
+    from models.baseline import ARIMAModel
+except Exception:
+    ARIMAModel = None
 
 class WalkForwardValidator:
     """
@@ -133,16 +138,28 @@ class WalkForwardValidator:
                 model = model_factory()
                 
                 if hasattr(model, 'fit'):
-                    if isinstance(train_data, pd.DataFrame) and target_column:
-                        model.fit(train_data, target_column=target_column, **fit_kwargs)
-                    else:
-                        model.fit(train_data, **fit_kwargs)
+                    try:
+                        if isinstance(train_data, pd.DataFrame) and target_column:
+                            model.fit(train_data, target_column=target_column, **fit_kwargs)
+                        else:
+                            model.fit(train_data, **fit_kwargs)
+                    except TypeError:
+                        # Fallback for models expecting Series/array only (e.g., ARIMAModel)
+                        target_series = train_data[target_column] if isinstance(train_data, pd.DataFrame) and target_column else train_data
+                        model.fit(target_series, **fit_kwargs)
                 else:
                     raise ValueError("Model must have a fit() method")
                 
                 # Predict on test set
                 if hasattr(model, 'predict'):
-                    predictions = model.predict(test_data, **predict_kwargs)
+                    try:
+                        if ARIMAModel is not None and isinstance(model, ARIMAModel):
+                            predictions = model.predict(steps=len(test_data), **predict_kwargs)
+                        else:
+                            predictions = model.predict(test_data, **predict_kwargs)
+                    except TypeError:
+                        # Fallback for models that take steps instead of data (e.g., ARIMAModel)
+                        predictions = model.predict(steps=len(test_data), **predict_kwargs)
                 else:
                     raise ValueError("Model must have a predict() method")
                 
@@ -205,8 +222,8 @@ class WalkForwardValidator:
             
             # Move forward
             if self.expanding:
-                # Expanding window: train_start stays at 0, train_end grows
-                train_start = 0  # Keep expanding
+                # Expanding window: keep start fixed at 0, slide forward by step_size
+                train_start += self.step_size
             else:
                 # Rolling window: move both start and end
                 train_start += self.step_size

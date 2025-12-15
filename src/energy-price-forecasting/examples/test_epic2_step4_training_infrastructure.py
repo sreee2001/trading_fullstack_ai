@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from training.data_splitting import split_time_series
 from training.evaluation import ModelEvaluator
-from training.cross_validation import WalkForwardValidator
+from evaluation.walk_forward import WalkForwardValidator
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,7 +43,8 @@ train, val, test = split_time_series(
     data,
     train_ratio=0.7,
     val_ratio=0.15,
-    test_ratio=0.15
+    test_ratio=0.15,
+    date_column='date'
 )
 
 print(f"[OK] Data split:")
@@ -76,8 +77,9 @@ print("\n[4/4] Testing Walk-Forward Validation...")
 
 # Create simple model factory
 def create_arima_model():
-    from models.baseline import ARIMAForecaster
-    return ARIMAForecaster(auto_arima=True)
+    from models.baseline import ARIMAModel
+    # Use simple auto-selected ARIMA (non-seasonal) for speed in manual test
+    return ARIMAModel(auto_select=True, seasonal=False, max_p=2, max_q=2, max_d=1)
 
 validator = WalkForwardValidator(
     train_window=100,
@@ -106,6 +108,4 @@ print("\n" + "="*80)
 print("[OK] STEP 4 COMPLETE: Model Training Infrastructure")
 print("="*80)
 print("\nPlease review the output above.")
-print("Press Enter to continue to Step 5...")
-input()
 

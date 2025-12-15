@@ -117,6 +117,37 @@ class TimeSeriesSplitter:
             test_data = test_data.iloc[:, 0]
         
         return train_data, val_data, test_data
+
+
+def split_time_series(
+    data: pd.DataFrame | pd.Series,
+    train_ratio: float = 0.7,
+    val_ratio: float = 0.15,
+    test_ratio: float = 0.15,
+    date_column: Optional[str] = None,
+    sort_by_date: bool = True
+) -> Tuple[pd.DataFrame | pd.Series, pd.DataFrame | pd.Series, pd.DataFrame | pd.Series]:
+    """
+    Convenience wrapper for splitting time series data.
+
+    Args:
+        data: Input data (DataFrame or Series)
+        train_ratio: Training split ratio
+        val_ratio: Validation split ratio
+        test_ratio: Test split ratio
+        date_column: Optional date column to sort by
+        sort_by_date: Whether to sort by date before splitting
+
+    Returns:
+        Tuple of (train, validation, test) datasets
+    """
+    splitter = TimeSeriesSplitter(
+        train_ratio=train_ratio,
+        val_ratio=val_ratio,
+        test_ratio=test_ratio,
+        date_column=date_column
+    )
+    return splitter.split(data, sort_by_date=sort_by_date)
     
     def split_with_dates(
         self,

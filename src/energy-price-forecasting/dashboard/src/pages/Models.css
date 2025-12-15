@@ -4,3 +4,92 @@
   padding: 2rem;
 }
 
+.models-controls {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  align-items: flex-end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-weight: 500;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.control-group select {
+  padding: 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  background: white;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.btn-primary:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.warning-message {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.models-section {
+  margin-top: 2rem;
+}
+

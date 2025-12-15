@@ -1,0 +1,122 @@
+/* Model Comparison Table Styles */
+
+.model-comparison-table {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.model-comparison-table h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+thead {
+  background-color: #f8fafc;
+}
+
+th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+th.sortable:hover {
+  background-color: #f1f5f9;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+tbody tr.best-model {
+  background-color: #fef3c7;
+  font-weight: 500;
+}
+
+tbody tr.best-model:hover {
+  background-color: #fde68a;
+}
+
+.model-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: normal;
+  margin-top: 0.25rem;
+}
+
+.stage-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stage-production {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.stage-staging {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.stage-archived {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.table-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.best-model-indicator {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: scroll;
+  }
+
+  table {
+    min-width: 800px;
+  }
+}
+

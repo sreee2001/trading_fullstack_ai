@@ -5,6 +5,13 @@
 **Status**: All 7 Features Complete (100%)  
 **Purpose**: Comprehensive manual testing guide for Epic 2
 
+**Related Documentation**:
+- [Epic 2 Kickoff](../../epics/epic-2/EPIC-2-KICKOFF.md)
+- [Epic 2 Celebration](../../status/epic-completion/EPIC-2-CELEBRATION.md)
+- [Epic 2 Test Results](../../status/test-results/EPIC-2-MANUAL-TESTING-RESULTS.md)
+- [Feature Completion Reports](../../status/feature-completion/)
+- [Table of Contents](../../TABLE-OF-CONTENTS.md)
+
 ---
 
 ## 📋 Prerequisites

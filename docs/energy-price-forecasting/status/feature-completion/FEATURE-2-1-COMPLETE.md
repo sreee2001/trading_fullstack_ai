@@ -7,6 +7,14 @@
 **Effort**: 5 days (actual: 6 hours)  
 **All Stories**: 8/8 Complete
 
+**Related Documentation**:
+- [Epic 2 Kickoff](../../epics/epic-2/EPIC-2-KICKOFF.md)
+- [Epic 2 Celebration](../epic-completion/EPIC-2-CELEBRATION.md)
+- [User Stories](../../user-stories/00-user-stories-epics-1-3.md#feature-21-feature-engineering-pipeline)
+- [Test Results](../test-results/FEATURE-2-1-TESTING-REPORT.md)
+- [Testing Guide](../../instructions/testing/EPIC-2-MANUAL-TESTING-GUIDE.md#feature-21-feature-engineering-pipeline)
+- [Table of Contents](../../TABLE-OF-CONTENTS.md)
+
 ---
 
 ## 📊 Executive Summary

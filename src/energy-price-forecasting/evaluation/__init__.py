@@ -12,6 +12,7 @@ from .walk_forward import WalkForwardValidator
 from .performance_metrics import PerformanceMetrics
 from .backtesting import BacktestingEngine
 from .statistical_metrics import StatisticalMetrics
+from .trading_simulator import TradingSimulator
 
 __version__ = "1.0.0"
 
@@ -20,5 +21,6 @@ __all__ = [
     'PerformanceMetrics',
     'BacktestingEngine',
     'StatisticalMetrics',
+    'TradingSimulator',
 ]
 

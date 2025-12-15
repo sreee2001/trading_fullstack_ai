@@ -29,6 +29,7 @@ from api.services.model_service import get_model_service
 from models.baseline.arima_model import ARIMAModel
 from models.baseline.prophet_model import ProphetModel
 from models.lstm.lstm_model import LSTMForecaster
+from mlops.model_validation import ModelValidator, ModelValidationThresholds
 
 # Setup logging
 setup_api_logging()
@@ -225,6 +226,7 @@ def train_all_models(
                     'model_id': model_id,
                     'status': 'success',
                     'metrics': metrics,
+                    'validation': validation_result,
                     'run_id': run_id
                 })
                 results['success_count'] += 1

@@ -1,0 +1,29 @@
+# Model Validation Thresholds Configuration
+# Energy Price Forecasting System
+# Version: 1.0
+
+thresholds:
+  directional_accuracy:
+    min: 0.70  # 70% minimum directional accuracy
+    description: "Minimum directional accuracy (up/down prediction)"
+  
+  sharpe_ratio:
+    min: 1.0  # Minimum Sharpe ratio for trading performance
+    description: "Minimum Sharpe ratio for trading performance"
+  
+  rmse:
+    max_multiplier: 1.1  # RMSE should not exceed baseline by more than 10%
+    description: "RMSE relative to baseline"
+  
+  mae:
+    max_multiplier: 1.15  # MAE should not exceed baseline by more than 15%
+    description: "MAE relative to baseline"
+  
+  mape:
+    max: 0.20  # 20% maximum MAPE
+    description: "Maximum Mean Absolute Percentage Error"
+  
+  r2:
+    min: 0.50  # Minimum R-squared
+    description: "Minimum R-squared coefficient"
+

@@ -13,6 +13,7 @@ from .performance_metrics import PerformanceMetrics
 from .backtesting import BacktestingEngine
 from .statistical_metrics import StatisticalMetrics
 from .trading_simulator import TradingSimulator
+from .model_comparison_dashboard import ModelComparisonDashboard
 
 __version__ = "1.0.0"
 
@@ -22,5 +23,6 @@ __all__ = [
     'BacktestingEngine',
     'StatisticalMetrics',
     'TradingSimulator',
+    'ModelComparisonDashboard',
 ]
 

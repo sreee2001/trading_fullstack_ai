@@ -11,11 +11,16 @@ Version: 1.0
 
 from .correlation_analysis import CorrelationAnalyzer
 from .seasonality_analysis import SeasonalityAnalyzer
+from .volatility_forecasting import VolatilityForecaster, VolatilityMetrics
+from .anomaly_detection import AnomalyDetector
 
 __version__ = "1.0.0"
 
 __all__ = [
     'CorrelationAnalyzer',
     'SeasonalityAnalyzer',
+    'VolatilityForecaster',
+    'VolatilityMetrics',
+    'AnomalyDetector',
 ]
 

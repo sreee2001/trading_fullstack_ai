@@ -14,6 +14,7 @@ from .backtesting import BacktestingEngine
 from .statistical_metrics import StatisticalMetrics
 from .trading_simulator import TradingSimulator
 from .model_comparison_dashboard import ModelComparisonDashboard
+from .visualization import BacktestingVisualizer
 
 __version__ = "1.0.0"
 
@@ -24,5 +25,6 @@ __all__ = [
     'StatisticalMetrics',
     'TradingSimulator',
     'ModelComparisonDashboard',
+    'BacktestingVisualizer',
 ]
 

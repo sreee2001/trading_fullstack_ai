@@ -52,7 +52,12 @@ coverage.xml
 *.pt
 *.pth
 *.onnx
-models/
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*/saved_models/
 mlruns/
 data/*.csv
 data/*.parquet

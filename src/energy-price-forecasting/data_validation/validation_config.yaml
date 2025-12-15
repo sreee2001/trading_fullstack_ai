@@ -1,0 +1,178 @@
+# Data Validation Configuration
+# Energy Price Forecasting System
+# Version: 1.0
+
+# Price Range Validation Rules
+price_ranges:
+  WTI_CRUDE:
+    min: 0.01
+    max: 300.00
+    unit: "USD/barrel"
+  BRENT_CRUDE:
+    min: 0.01
+    max: 300.00
+    unit: "USD/barrel"
+  NATURAL_GAS:
+    min: 0.01
+    max: 50.00
+    unit: "USD/MMBtu"
+  GOLD:
+    min: 0.01
+    max: 10000.00
+    unit: "USD/oz"
+  SILVER:
+    min: 0.01
+    max: 500.00
+    unit: "USD/oz"
+
+# Tolerance Settings
+tolerances:
+  # Cross-source price comparison tolerance (5%)
+  cross_source_tolerance: 0.05
+  
+  # Maximum daily price change (50%)
+  max_daily_change: 0.50
+  
+  # Maximum weekly price change (70%)
+  max_weekly_change: 0.70
+  
+  # Same source, same commodity tolerance (0.1%)
+  same_source_tolerance: 0.001
+
+# Completeness Rules
+completeness:
+  # Maximum gap in days for daily data
+  max_gap_days: 2
+  
+  # Minimum number of data points required
+  min_data_points: 30
+  
+  # Maximum allowed missing rate (5%)
+  max_missing_rate: 0.05
+  
+  # Maximum consecutive missing days
+  max_consecutive_missing: 2
+
+# Outlier Detection Settings
+outliers:
+  # Z-score threshold for outlier detection
+  z_score_threshold: 3.0
+  
+  # IQR multiplier for outlier detection
+  iqr_multiplier: 1.5
+  
+  # Rolling window for outlier calculation (days)
+  rolling_window_days: 30
+  
+  # Action: 'flag' or 'remove' (we use 'flag')
+  action: "flag"
+
+# Quality Score Thresholds
+quality_thresholds:
+  excellent:
+    min: 95
+    max: 100
+    action: "accept"
+  good:
+    min: 85
+    max: 94
+    action: "accept_with_minor_cleanup"
+  fair:
+    min: 70
+    max: 84
+    action: "investigate"
+  poor:
+    min: 50
+    max: 69
+    action: "extensive_cleanup"
+  unusable:
+    min: 0
+    max: 49
+    action: "reject"
+
+# Quality Score Weights
+quality_weights:
+  completeness: 0.4
+  consistency: 0.3
+  schema_compliance: 0.2
+  outlier: 0.1
+
+# Schema Definitions
+schemas:
+  price_data:
+    required:
+      - timestamp
+      - price
+      - commodity
+      - source
+    optional:
+      - volume
+      - open
+      - high
+      - low
+      - close
+    types:
+      timestamp: "datetime64[ns]"
+      price: "float64"
+      commodity: "object"
+      source: "object"
+      volume: "float64"
+      open: "float64"
+      high: "float64"
+      low: "float64"
+      close: "float64"
+
+# Validation Workflow Settings
+workflow:
+  # Stop validation on first critical error
+  stop_on_critical: true
+  
+  # Generate detailed reports
+  detailed_reports: true
+  
+  # Log validation results
+  log_results: true
+  
+  # Report output directory
+  report_dir: "logs/validation"
+  
+  # Report format (json, text, both)
+  report_format: "both"
+
+# Holiday Calendars (for completeness checks)
+holidays:
+  US:
+    - "2024-01-01"  # New Year's Day
+    - "2024-01-15"  # Martin Luther King Jr. Day
+    - "2024-02-19"  # Presidents Day
+    - "2024-03-29"  # Good Friday
+    - "2024-05-27"  # Memorial Day
+    - "2024-07-04"  # Independence Day
+    - "2024-09-02"  # Labor Day
+    - "2024-11-28"  # Thanksgiving
+    - "2024-12-25"  # Christmas
+    # Add more years as needed
+
+# Data Source Specific Settings
+source_settings:
+  EIA:
+    expected_frequency: "daily"
+    allow_missing_volume: true
+    timezone: "America/New_York"
+  
+  FRED:
+    expected_frequency: "daily"
+    allow_missing_volume: true
+    timezone: "America/New_York"
+  
+  YAHOO_FINANCE:
+    expected_frequency: "daily"
+    allow_missing_volume: false
+    timezone: "America/New_York"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/validation.log"
+

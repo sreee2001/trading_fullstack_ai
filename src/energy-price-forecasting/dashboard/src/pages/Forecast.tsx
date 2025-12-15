@@ -183,6 +183,51 @@ const Forecast: React.FC = () => {
                 Show Trading Signals ({signals.length})
               </label>
             )}
+            {forecast && (
+              <>
+                <button
+                  onClick={async () => {
+                    try {
+                      const chartId = showCombined
+                        ? 'combined-chart-container'
+                        : showComparison
+                        ? 'comparison-chart-container'
+                        : 'forecast-chart-container';
+                      await exportChartAsPNG(
+                        chartId,
+                        `forecast_${forecast.commodity}_${forecast.forecast_date}.png`
+                      );
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Failed to export chart');
+                    }
+                  }}
+                  className="btn-secondary"
+                >
+                  Export Chart (PNG)
+                </button>
+                <button
+                  onClick={() => {
+                    try {
+                      const csvData = forecast.predictions.map((pred) => ({
+                        date: pred.date,
+                        price: pred.price,
+                        confidence_lower: pred.confidence_lower,
+                        confidence_upper: pred.confidence_upper,
+                      }));
+                      exportDataAsCSV(
+                        csvData,
+                        `forecast_${forecast.commodity}_${forecast.forecast_date}.csv`
+                      );
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Failed to export CSV');
+                    }
+                  }}
+                  className="btn-secondary"
+                >
+                  Export Data (CSV)
+                </button>
+              </>
+            )}
           </div>
 
           {showComparison && actualData ? (

@@ -408,10 +408,16 @@ pytest tests/ -v -m integration
 - [Comprehensive Analysis](docs/energy-price-forecasting/EPIC-1-COMPREHENSIVE-ANALYSIS.md) (950+ lines)
 
 **Project Planning**:
-- [Epic Breakdown](docs/energy-price-forecasting/project-plan/02-epic-breakdown.md)
-- [Feature Breakdown](docs/energy-price-forecasting/project-plan/03-feature-breakdown.md)
-- [User Stories (Epics 1-3)](docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md) (2,250 lines)
-- [Project Tracker](docs/energy-price-forecasting/project-plan/04-project-tracker.md)
+- [Epic Breakdown](docs/energy-price-forecasting/project-plan/02-epic-breakdown.md) - All 8 epics defined
+- [Feature Breakdown](docs/energy-price-forecasting/project-plan/03-feature-breakdown.md) - 64 features detailed
+- [Project Tracker](docs/energy-price-forecasting/project-plan/04-project-tracker.md) - Real-time progress (31.3% complete)
+- [User Stories (Epics 1-3)](docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md) - 100+ stories (2,250 lines)
+- [User Stories (Epics 4-8)](docs/energy-price-forecasting/user-stories/01-user-stories-epics-4-8.md) - 75+ stories
+
+**Testing & Quality Assurance**:
+- [Manual Test Cases (Epic 3 & 4)](docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) - 89 comprehensive test cases
+- [Epic 2 Manual Testing Guide](docs/energy-price-forecasting/EPIC-2-MANUAL-TESTING-GUIDE.md) - Step-by-step testing instructions
+- [Testing Guide](docs/energy-price-forecasting/TESTING-GUIDE.md) - Complete testing documentation
 
 **Implementation Reports**:
 - [Session Reports](docs/energy-price-forecasting/session-reports/) (8 detailed reports)

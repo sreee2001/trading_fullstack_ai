@@ -111,6 +111,85 @@ def get_or_create_data_source(
 
 
 def insert_price_data(
+    commodity: str,
+    source: str,
+    timestamp: datetime,
+    price: float,
+    volume: Optional[float] = None,
+    open_price: Optional[float] = None,
+    high_price: Optional[float] = None,
+    low_price: Optional[float] = None,
+    close_price: Optional[float] = None
+) -> int:
+    """
+    Insert a single price data record into the database.
+    
+    Args:
+        commodity: Commodity symbol (e.g., WTI_CRUDE)
+        source: Data source name (e.g., EIA)
+        timestamp: Price timestamp
+        price: Price value
+        volume: Trading volume (optional)
+        open_price: Opening price (optional)
+        high_price: High price (optional)
+        low_price: Low price (optional)
+        close_price: Closing price (optional)
+    
+    Returns:
+        int: Number of records inserted (0 or 1)
+    """
+    with get_session() as session:
+        # Get or create commodity and data source
+        try:
+            commodity_obj = get_or_create_commodity(session, commodity)
+        except ValueError:
+            commodity_obj = get_or_create_commodity(
+                session,
+                symbol=commodity,
+                name=commodity
+            )
+        source_obj = get_or_create_data_source(session, source)
+        
+        # Prepare record
+        record = {
+            "timestamp": timestamp,
+            "commodity_id": commodity_obj.id,
+            "source_id": source_obj.id,
+            "price": price,
+        }
+        
+        if volume is not None:
+            record["volume"] = int(volume)
+        if open_price is not None:
+            record["open_price"] = open_price
+        if high_price is not None:
+            record["high_price"] = high_price
+        if low_price is not None:
+            record["low_price"] = low_price
+        if close_price is not None:
+            record["close_price"] = close_price
+        
+        # Perform upsert
+        stmt = insert(PriceData).values([record])
+        stmt = stmt.on_conflict_do_update(
+            index_elements=["timestamp", "commodity_id", "source_id"],
+            set_={
+                "price": stmt.excluded.price,
+                "volume": stmt.excluded.volume,
+                "open_price": stmt.excluded.open_price,
+                "high_price": stmt.excluded.high_price,
+                "low_price": stmt.excluded.low_price,
+                "close_price": stmt.excluded.close_price,
+            }
+        )
+        
+        result = session.execute(stmt)
+        inserted_count = result.rowcount
+        
+        return inserted_count
+
+
+def insert_price_data_bulk(
     df: pd.DataFrame,
     commodity_symbol: str,
     source_name: str,
@@ -319,6 +398,34 @@ def get_price_data(
         logger.info(f"Retrieved {len(df)} records for {commodity_symbol} from {source_name}")
         
         return df
+
+
+def get_latest_price_date() -> Optional[datetime]:
+    """
+    Get the most recent date for which we have price data across all sources.
+    
+    Returns:
+        Optional[datetime]: Latest timestamp or None if no data exists
+    
+    Example:
+        ```python
+        latest_date = get_latest_price_date()
+        if latest_date:
+            print(f"Data is current up to: {latest_date}")
+        ```
+    """
+    with get_session() as session:
+        result = (
+            session.query(func.max(PriceData.timestamp))
+            .scalar()
+        )
+        
+        if result:
+            logger.info(f"Latest price date in database: {result}")
+            return result
+        else:
+            logger.info("No price data found in database")
+            return None
 
 
 def get_latest_price(

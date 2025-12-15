@@ -144,7 +144,9 @@ An end-to-end machine learning system for forecasting WTI crude oil, Brent crude
 - ✅ API key management and rate limiting (Redis)
 - ✅ Response caching and API documentation (Swagger UI)
 - ✅ Health check and monitoring endpoints
+- ✅ **WebSocket streaming** (Optional enhancement - real-time forecast updates)
 - 📚 [API Documentation](docs/energy-price-forecasting/DEPLOYMENT_GUIDE.md)
+- 📚 [WebSocket Implementation](docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
 
 **Epic 5 Completed** (7 features, 35 user stories):
 - ✅ React frontend application with TypeScript
@@ -153,6 +155,9 @@ An end-to-end machine learning system for forecasting WTI crude oil, Brent crude
 - ✅ Backtest results dashboard
 - ✅ Model comparison interface
 - ✅ Export functionality (PNG, CSV)
+- ✅ **Streamlit dashboard** (Optional enhancement - Python-only alternative)
+- 📚 [Streamlit Dashboard](src/energy-price-forecasting/dashboard-streamlit/README.md)
+- 📚 [WebSocket & Streamlit Guide](docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
 
 **Epic 6 Completed** (8 features, 40 user stories):
 - ✅ Docker containerization (backend & frontend)
@@ -403,11 +408,15 @@ trading_fullstack_ai/
 **Epic 4: API Service Layer** ✅ **COMPLETE** (100%)
 - 9/9 features complete | 45/45 user stories complete
 - FastAPI REST API | Authentication | Rate limiting | Caching
+- ✅ WebSocket streaming (Optional: real-time updates)
 - 📚 [API Documentation](docs/energy-price-forecasting/DEPLOYMENT_GUIDE.md)
+- 📚 [WebSocket Guide](docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
 
 **Epic 5: Visualization & User Interface** ✅ **COMPLETE** (100%)
 - 7/7 features complete | 35/35 user stories complete
 - React + TypeScript frontend | Interactive charts | Export functionality
+- ✅ Streamlit dashboard (Optional: Python-only alternative)
+- 📚 [Streamlit Dashboard](src/energy-price-forecasting/dashboard-streamlit/README.md)
 
 **Epic 6: MLOps & Deployment Pipeline** ✅ **COMPLETE** (100%)
 - 8/8 features complete | 40/40 user stories complete
@@ -620,8 +629,8 @@ All 64 features implemented, tested, and documented. System is production-ready.
 - Calmar Ratio calculation (optional risk metric)
 
 **5. Documentation Cleanup** (10 minutes)
-- Remove WebSocket mentions (not in scope)
-- Remove Streamlit mentions (React chosen instead)
+- ✅ WebSocket streaming implemented (see [Implementation Guide](docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md))
+- ✅ Streamlit dashboard implemented (see [Dashboard README](src/energy-price-forecasting/dashboard-streamlit/README.md))
 
 👉 **Gap Analysis**: [Comprehensive Report](docs/energy-price-forecasting/project-plan/05-GAP-ANALYSIS-REPORT.md)  
 👉 **Pending Tasks**: [Task Tracker](docs/energy-price-forecasting/project-plan/06-PENDING-TASKS-TRACKER.md)

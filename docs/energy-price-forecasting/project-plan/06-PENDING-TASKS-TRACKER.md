@@ -25,29 +25,63 @@ This tracker documents optional enhancements and minor improvements identified d
 
 ---
 
-### 🟢 Medium Priority (Documentation Cleanup)
+### 🟢 Medium Priority (Documentation Updates)
 
-#### Task M1: Remove WebSocket Mentions from README
-- **Status**: 📋 Pending
+#### Task M1: Clarify WebSocket as Optional Enhancement
+- **Status**: ✅ Complete
 - **Priority**: Medium
-- **Effort**: 5 minutes
-- **Description**: Remove WebSocket mentions from README files (not in scope)
-- **Files**: `src/energy-price-forecasting/README.md`
-- **Reason**: WebSocket was never part of approved scope, only mentioned in early planning docs
-- **Impact**: Low - Documentation accuracy
+- **Effort**: 10 minutes
+- **Description**: Update README to clarify WebSocket as optional enhancement for real-time updates
+- **Files**: `src/energy-price-forecasting/README.md`, `docs/energy-price-forecasting/project-plan/05-GAP-ANALYSIS-REPORT.md`
+- **Reason**: WebSocket is a valid optional enhancement, not a removed feature
+- **Impact**: Medium - Better documentation clarity, preserves future enhancement option
+- **Value/Effort Analysis**: See Gap Analysis Report Section 7.4
 
-#### Task M2: Remove Streamlit Mentions from README
-- **Status**: 📋 Pending
+#### Task M2: Clarify Streamlit as Optional Alternative
+- **Status**: ✅ Complete
 - **Priority**: Medium
-- **Effort**: 5 minutes
-- **Description**: Remove Streamlit mentions from README files (React dashboard chosen instead)
-- **Files**: `src/energy-price-forecasting/README.md`
-- **Reason**: React dashboard was implemented, not Streamlit
-- **Impact**: Low - Documentation accuracy
+- **Effort**: 10 minutes
+- **Description**: Update README to clarify Streamlit as optional alternative dashboard
+- **Files**: `src/energy-price-forecasting/README.md`, `docs/energy-price-forecasting/project-plan/05-GAP-ANALYSIS-REPORT.md`
+- **Reason**: Streamlit is a valid alternative for Python-only teams or rapid prototyping
+- **Impact**: Medium - Better documentation clarity, preserves future enhancement option
+- **Value/Effort Analysis**: See Gap Analysis Report Section 7.5
 
 ---
 
 ### 🔵 Low Priority (Optional Enhancements)
+
+#### Task L0: Implement WebSocket Streaming (Optional)
+- **Status**: ✅ **COMPLETE**
+- **Priority**: Low (Optional)
+- **Effort**: 12-16 hours (1.5-2 days) ✅ **COMPLETED**
+- **Description**: Implement WebSocket support for real-time forecast updates
+- **Location**: `src/energy-price-forecasting/api/routes/websocket.py` ✅
+- **Dependencies**: FastAPI WebSocket support, React WebSocket client ✅
+- **Value**: High for real-time trading use cases, low for batch processing
+- **Implementation Date**: December 15, 2025
+- **Files Created**:
+  - `api/routes/websocket.py` - WebSocket endpoint
+  - `dashboard/src/hooks/useWebSocket.ts` - React WebSocket hook
+  - `tests/test_api_websocket.py` - Unit tests
+  - `docs/.../test-cases/WEBSOCKET-TEST-CASES.md` - Test cases
+- **Documentation**: See [WebSocket Implementation Guide](../WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
+
+#### Task L0.5: Implement Streamlit Dashboard (Optional)
+- **Status**: ✅ **COMPLETE**
+- **Priority**: Low (Optional)
+- **Effort**: 20-24 hours (2.5-3 days) ✅ **COMPLETED**
+- **Description**: Create Streamlit dashboard as Python-only alternative to React dashboard
+- **Location**: `src/energy-price-forecasting/dashboard-streamlit/` ✅
+- **Dependencies**: Streamlit, FastAPI backend integration ✅
+- **Value**: High for Python-only teams or rapid prototyping, low if React dashboard meets needs
+- **Implementation Date**: December 15, 2025
+- **Files Created**:
+  - `dashboard-streamlit/app.py` - Main Streamlit application
+  - `dashboard-streamlit/requirements.txt` - Dependencies
+  - `dashboard-streamlit/README.md` - Usage guide
+  - `docs/.../test-cases/STREAMLIT-TEST-CASES.md` - Test cases
+- **Documentation**: See [Streamlit Dashboard README](../../src/energy-price-forecasting/dashboard-streamlit/README.md)
 
 #### Task L1: Implement Calmar Ratio
 - **Status**: 📋 Pending
@@ -110,20 +144,20 @@ This tracker documents optional enhancements and minor improvements identified d
 |----------|-------|--------|
 | Critical | 0 | ✅ None |
 | High | 0 | ✅ None |
-| Medium | 2 | 📋 Pending |
-| Low | 5 | 📋 Pending |
-| **TOTAL** | **7** | **All Optional** |
+| Medium | 2 | ✅ Complete |
+| Low | 7 | ✅ 2 Complete, 5 Pending |
+| **TOTAL** | **9** | **2 Implemented, 7 Optional** |
 
 ---
 
 ## Next Steps
 
-### Immediate (Recommended)
-1. **Task M1**: Remove WebSocket mentions (5 min)
-2. **Task M2**: Remove Streamlit mentions (5 min)
+### Immediate (Completed ✅)
+1. **Task M1**: Clarify WebSocket as optional enhancement ✅
+2. **Task M2**: Clarify Streamlit as optional alternative ✅
 
-**Total Effort**: 10 minutes  
-**Impact**: Documentation accuracy
+**Total Effort**: 20 minutes  
+**Impact**: Better documentation clarity, preserves future enhancement options
 
 ### Optional (As Needed)
 - Implement any of the 5 low-priority tasks based on actual needs
@@ -137,6 +171,26 @@ This tracker documents optional enhancements and minor improvements identified d
 - **All critical tasks are done**: No blockers
 - **All high-priority tasks are done**: No important items pending
 - **Pending tasks are optional**: Nice-to-have improvements only
+
+---
+
+---
+
+## 📊 Value & Effort Summary
+
+### WebSocket Streaming ✅ **IMPLEMENTED**
+- **Effort**: 12-16 hours (1.5-2 days) ✅ **COMPLETED**
+- **Value**: 6/10 (Medium-High) - High for real-time trading, low for batch processing
+- **ROI**: Break-even if >5 users need real-time updates
+- **Status**: ✅ Fully implemented with tests and documentation
+- **Implementation Guide**: See [WebSocket & Streamlit Implementation](../WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
+
+### Streamlit Dashboard ✅ **IMPLEMENTED**
+- **Effort**: 20-24 hours (2.5-3 days) ✅ **COMPLETED**
+- **Value**: 4/10 (Low-Medium) - High for Python-only teams, low if React meets needs
+- **ROI**: Break-even if team needs Python-only solution
+- **Status**: ✅ Fully implemented with tests and documentation
+- **Implementation Guide**: See [WebSocket & Streamlit Implementation](../WEBSOCKET-STREAMLIT-IMPLEMENTATION.md)
 
 ---
 

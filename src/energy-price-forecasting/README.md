@@ -67,8 +67,8 @@ An end-to-end machine learning system that ingests historical energy price data 
          │  📋 PLANNED              │
          │                          │
          │  • FastAPI REST API      │
-         │  • WebSocket streaming   │
-         │  • Streamlit dashboard   │
+         │  • WebSocket streaming   │ ✅ Implemented (real-time updates)
+         │  • Streamlit dashboard   │ ✅ Implemented (Python-only alternative)
          │  • Performance metrics   │
          └──────────────────────────┘
 ```
@@ -116,11 +116,12 @@ An end-to-end machine learning system that ingests historical energy price data 
 
 ### Upcoming Capabilities (In Progress)
 
-**API & Interface** (Epics 4-5 - Planned):
-- FastAPI REST endpoints
-- Real-time WebSocket updates
-- Streamlit interactive dashboard
-- Performance visualization
+**API & Interface** (Epics 4-5 - Complete ✅):
+- ✅ FastAPI REST endpoints (Implemented)
+- ✅ React + TypeScript dashboard (Implemented)
+- ✅ Real-time WebSocket updates (Implemented - see [WebSocket Guide](../docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md))
+- ✅ Streamlit dashboard (Implemented - see [Streamlit README](dashboard-streamlit/README.md))
+- ✅ Performance visualization (Implemented)
 
 ---
 
@@ -758,19 +759,20 @@ docker compose up -d
 - Risk metrics (Sharpe, Sortino, Max Drawdown)
 - Performance visualization
 
-**Epic 4: API Service Layer**
-- FastAPI REST endpoints
-- WebSocket for real-time updates
-- Authentication & rate limiting
-- API documentation (Swagger)
+**Epic 4: API Service Layer** ✅ Complete
+- ✅ FastAPI REST endpoints
+- ✅ Authentication & rate limiting
+- ✅ API documentation (Swagger)
+- ✅ WebSocket for real-time updates (Implemented - see [WebSocket Guide](../docs/energy-price-forecasting/WEBSOCKET-STREAMLIT-IMPLEMENTATION.md))
 
 ### Medium-term (Weeks 9-18)
 
-**Epic 5: Visualization & UI**
-- Streamlit dashboard
-- Interactive charts (Plotly)
-- Real-time price updates
-- Model performance metrics
+**Epic 5: Visualization & UI** ✅ Complete
+- ✅ React + TypeScript dashboard (Implemented)
+- ✅ Interactive charts (Recharts/Chart.js)
+- ✅ Real-time price updates (via REST API polling or WebSocket)
+- ✅ Model performance metrics
+- ✅ Streamlit dashboard (Implemented - see [Streamlit README](dashboard-streamlit/README.md))
 
 **Epic 6-8**: MLOps, advanced analytics, final QA
 

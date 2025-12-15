@@ -90,6 +90,10 @@ app = FastAPI(
         {
             "name": "Admin",
             "description": "Administrative endpoints for API key management"
+        },
+        {
+            "name": "WebSocket",
+            "description": "WebSocket endpoints for real-time forecast updates"
         }
     ]
 )
@@ -183,13 +187,14 @@ def root() -> Dict[str, Any]:
 
 
 # Include API routes
-from api.routes import forecast, historical, models, backtest, admin, health
+from api.routes import forecast, historical, models, backtest, admin, health, websocket
 app.include_router(forecast.router)
 app.include_router(historical.router)
 app.include_router(models.router)
 app.include_router(backtest.router)
 app.include_router(admin.router)
 app.include_router(health.router)
+app.include_router(websocket.router)
 
 
 # Log application startup

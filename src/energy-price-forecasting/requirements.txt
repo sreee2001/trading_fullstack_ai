@@ -20,9 +20,9 @@ uvicorn[standard]==0.25.0
 pydantic==2.5.3
 pydantic-settings==2.1.0
 
-# ML frameworks (choose one or both)
+# ML frameworks
 # torch>=2.2.0  # PyTorch - uncomment if using (Python 3.13 compatible)
-# tensorflow>=2.16.0  # TensorFlow - uncomment if using (Python 3.13 compatible)
+tensorflow>=2.16.0  # TensorFlow/Keras for LSTM models (Python 3.13 compatible)
 scikit-learn>=1.4.0  # Python 3.13 compatible
 statsmodels>=0.14.1  # Python 3.13 compatible
 

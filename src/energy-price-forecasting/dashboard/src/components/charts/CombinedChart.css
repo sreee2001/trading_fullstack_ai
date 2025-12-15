@@ -43,3 +43,19 @@
   color: #ef4444;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .combined-chart {
+    padding: 1rem;
+  }
+
+  .combined-chart h3 {
+    font-size: 1rem;
+  }
+
+  .signals-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+

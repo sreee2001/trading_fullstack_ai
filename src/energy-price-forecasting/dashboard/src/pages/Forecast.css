@@ -4,6 +4,19 @@
   padding: 2rem;
 }
 
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .forecast-page {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .forecast-page {
+    padding: 1rem;
+  }
+}
+
 .forecast-controls {
   display: flex;
   gap: 1.5rem;

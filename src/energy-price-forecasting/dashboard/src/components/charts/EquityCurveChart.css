@@ -51,3 +51,19 @@
   color: #ef4444;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .equity-curve-chart {
+    padding: 1rem;
+  }
+
+  .equity-curve-chart h3 {
+    font-size: 1rem;
+  }
+
+  .equity-summary {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+

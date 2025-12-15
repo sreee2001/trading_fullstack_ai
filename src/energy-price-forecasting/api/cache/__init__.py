@@ -17,6 +17,10 @@ from api.cache.rate_limiter import (
     get_rate_limiter
 )
 from api.cache.rate_limit_middleware import RateLimitMiddleware
+from api.cache.response_cache import (
+    ResponseCache,
+    get_response_cache
+)
 
 __all__ = [
     "get_redis_client",
@@ -25,5 +29,7 @@ __all__ = [
     "RateLimiter",
     "get_rate_limiter",
     "RateLimitMiddleware",
+    "ResponseCache",
+    "get_response_cache",
 ]
 

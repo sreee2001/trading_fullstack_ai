@@ -28,7 +28,7 @@
 | **1** | Data Foundation & Infrastructure | 6 | 6 | 100% | ✅ Complete | P0 | [Comprehensive Docs](../epics/epic-1/EPIC-1-COMPREHENSIVE-DOCUMENTATION.md) \| [Status](../status/epic-completion/EPIC-1-STATUS-REPORT.md) \| [Test Cases](../test-cases/EPIC-1-MANUAL-TEST-CASES.md) |
 | **2** | Core ML Model Development | 7 | 7 | 100% | ✅ Complete | P0 | [Comprehensive Docs](../epics/epic-2/EPIC-2-COMPREHENSIVE-DOCUMENTATION.md) \| [Celebration](../status/epic-completion/EPIC-2-CELEBRATION.md) \| [Test Cases](../test-cases/EPIC-2-MANUAL-TEST-CASES.md) |
 | **3** | Model Evaluation & Backtesting | 7 | 7 | 100% | ✅ Complete | P0 | [Test Cases](../test-cases/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
-| **4** | API Service Layer | 9 | 9 | 100% | ✅ Complete | P1 | [Epic Breakdown](02-epic-breakdown.md) |
+| **4** | API Service Layer | 9 | 9 | 100% | ✅ Complete | P1 | [Status Report](../status/epic-completion/EPIC-4-STATUS-REPORT.md) \| [Epic Breakdown](02-epic-breakdown.md) |
 | **5** | Visualization & User Interface | 8 | 0 | 0% | 📋 Planning | P1 | [Feature Breakdown](03-feature-breakdown.md) |
 | **6** | MLOps & Deployment Pipeline | 8 | 0 | 0% | 📋 Planning | P2 | [Project Tracker](04-project-tracker.md) |
 | **7** | Advanced Analytics & Insights | 7 | 0 | 0% | 📋 Planning | P2 | [User Stories](../user-stories/) |

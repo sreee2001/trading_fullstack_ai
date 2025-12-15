@@ -65,37 +65,54 @@ def create_lstm_model(**params):
             learning_rate=params.get('learning_rate', 0.001)
         )
     except ImportError:
-        # Fallback to ARIMA if LSTM not available
-        from models.baseline import ARIMAForecaster
-        return ARIMAForecaster(auto_arima=True)
+        # If TensorFlow/LSTM is not available, raise to let the caller handle skipping.
+        raise
+
+def summarize_tuner(tuner: HyperparameterTuner, label: str) -> None:
+    """
+    Helper to print a consistent summary of tuning results using the public API.
+    """
+    best = tuner.get_best_result()
+    results_df = tuner.get_results()
+    n_trials = len(results_df) if not results_df.empty else None
+
+    print(f"\n[OK] {label} Complete:")
+    print(f"   Best parameters: {best.get('best_params')}")
+    if best.get('best_score') is not None:
+        print(f"   Best score ({tuner.scoring_metric.upper()}): {best['best_score']:.4f}")
+    if n_trials is not None:
+        print(f"   Total trials: {n_trials}")
+
 
 # Test Random Search
 try:
     tuner = HyperparameterTuner(
-        method='random_search',
-        search_space=search_space,
-        n_iterations=3  # Minimal for testing
+        method='random',
+        scoring_metric='rmse',
+        search_space_config=None,
+        n_iter=3  # Minimal for testing
     )
     
-    print("   Running random search (this may take 5-10 minutes)...")
+    print("   Running random search (this may take a few minutes)...")
     print("   Note: Using only 3 iterations for faster testing")
     
-    tuning_results = tuner.tune(
+    # Use explicit param_space so we do not depend on external config
+    _best_params, _best_model = tuner.tune(
         model_factory=create_lstm_model,
+        model_type='lstm',
         train_data=train_data,
-        validation_data=val_data,
-        target_col='price',
+        val_data=val_data,
+        target_column='price',
+        param_space=search_space,
         fit_kwargs={'epochs': 3, 'batch_size': 32, 'verbose': 0},  # Minimal epochs
-        scoring_metric='RMSE'
+        predict_kwargs={},
+        verbose=0
     )
-    
-    print("\n[OK] Random Search Complete:")
-    print(f"   Best parameters: {tuning_results['best_params']}")
-    print(f"   Best score (RMSE): {tuning_results['best_score']:.4f}")
-    print(f"   Total trials: {tuning_results['n_trials']}")
-    
+        
+    summarize_tuner(tuner, "Random Search")
+        
 except Exception as e:
-    print(f"\n⚠️  Hyperparameter tuning test skipped: {e}")
+    print(f"\n[WARN] Hyperparameter tuning test skipped: {e}")
     print("   This is expected if TensorFlow is not available")
     print("   Or if you want to skip this time-consuming test")
 
@@ -109,29 +126,30 @@ small_search_space = {
 
 try:
     tuner_grid = HyperparameterTuner(
-        method='grid_search',
-        search_space=small_search_space
+        method='grid',
+        scoring_metric='rmse',
+        search_space_config=None
     )
     
-    print("   Running grid search (this may take 5-10 minutes)...")
+    print("   Running grid search (this may take a few minutes)...")
     print("   Note: Using minimal grid for faster testing")
     
-    grid_results = tuner_grid.tune(
+    _best_params_grid, _best_model_grid = tuner_grid.tune(
         model_factory=create_lstm_model,
+        model_type='lstm',
         train_data=train_data,
-        validation_data=val_data,
-        target_col='price',
+        val_data=val_data,
+        target_column='price',
+        param_space=small_search_space,
         fit_kwargs={'epochs': 3, 'batch_size': 32, 'verbose': 0},
-        scoring_metric='RMSE'
+        predict_kwargs={},
+        verbose=0
     )
     
-    print("\n[OK] Grid Search Complete:")
-    print(f"   Best parameters: {grid_results['best_params']}")
-    print(f"   Best score (RMSE): {grid_results['best_score']:.4f}")
-    print(f"   Total trials: {grid_results['n_trials']}")
+    summarize_tuner(tuner_grid, "Grid Search")
     
 except Exception as e:
-    print(f"\n⚠️  Grid search test skipped: {e}")
+    print(f"\n[WARN] Grid search test skipped: {e}")
 
 print("\n" + "="*80)
 print("[OK] STEP 5 COMPLETE: Hyperparameter Tuning Framework")
@@ -139,5 +157,5 @@ print("="*80)
 print("\nPlease review the output above.")
 print("Note: Hyperparameter tuning can be time-consuming.")
 print("Press Enter to continue to Step 6...")
-input()
+# input()  # Removed for non-interactive execution
 

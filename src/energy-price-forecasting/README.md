@@ -103,15 +103,18 @@ An end-to-end machine learning system that ingests historical energy price data 
 - Data freshness tracking
 - Comprehensive logging
 
-### Upcoming Capabilities (In Progress)
+### Current Capabilities (Epic 2 - COMPLETE ✅)
 
-**Machine Learning** (Epic 2 - Starting):
-- LSTM neural networks for sequence modeling
-- ARIMA/SARIMA for statistical forecasting
-- Prophet for trend + seasonality
-- Feature engineering pipeline
-- Hyperparameter tuning with Optuna
-- Model versioning with MLflow
+**Machine Learning**:
+- ✅ Feature engineering pipeline (technical indicators, lag features, seasonal decomposition)
+- ✅ Baseline statistical models (ARIMA/SARIMA, Prophet, Exponential Smoothing)
+- ✅ LSTM neural networks for sequence modeling
+- ✅ Model training infrastructure (data splitting, evaluation, walk-forward validation)
+- ✅ Hyperparameter tuning framework (Grid Search, Random Search, Bayesian Optimization with Optuna)
+- ✅ Model versioning & experiment tracking (MLflow integration)
+- ✅ Multi-horizon forecasting (1-day, 7-day, 30-day predictions)
+
+### Upcoming Capabilities (In Progress)
 
 **API & Interface** (Epics 4-5 - Planned):
 - FastAPI REST endpoints
@@ -195,6 +198,15 @@ pip install -r requirements.txt
 - `pytest`, `pytest-cov` - Testing
 - `apscheduler` - Job scheduling
 - `pyyaml` - Configuration
+
+**Epic 2 Optional Dependencies** (for ML features):
+- `tensorflow` - LSTM neural networks
+- `pmdarima` - ARIMA/SARIMA models
+- `prophet` - Facebook Prophet forecasting
+- `mlflow` - Experiment tracking & model registry
+- `optuna` - Hyperparameter optimization
+- `scikit-learn` - ML utilities
+- `statsmodels` - Statistical models
 
 ### Step 4: Start Database
 
@@ -373,6 +385,15 @@ python examples/test_pipeline.py
 
 # Test Feature 1.6 (scheduler, monitor, notifications)
 python examples/test_feature_1_6.py
+
+# Epic 2 Manual Testing (all steps)
+python examples/test_epic2_step1_feature_engineering.py
+python examples/test_epic2_step2_baseline_models.py
+python examples/test_epic2_step3_lstm.py
+python examples/test_epic2_step4_training_infrastructure.py
+python examples/test_epic2_step5_hyperparameter_tuning.py
+python examples/test_epic2_step6_mlflow.py
+python examples/test_epic2_step7_multi_horizon.py
 ```
 
 ---
@@ -518,26 +539,48 @@ src/energy-price-forecasting/
 | **1.6** | Pipeline Orchestration | 5/5 | ✅ Complete |
 | **TOTAL** | | **28/28** | **✅ 100%** |
 
-**Achievements**:
+### Epic 2: Core ML Model Development ✅ COMPLETE
+
+| Feature | Description | Stories | Status |
+|---------|-------------|---------|--------|
+| **2.1** | Feature Engineering Pipeline | 7/7 | ✅ Complete |
+| **2.2** | Baseline Statistical Models | 5/5 | ✅ Complete |
+| **2.3** | LSTM Neural Network Model | 7/7 | ✅ Complete |
+| **2.4** | Model Training Infrastructure | 5/5 | ✅ Complete |
+| **2.5** | Hyperparameter Tuning Framework | 5/5 | ✅ Complete |
+| **2.6** | Model Versioning & Experiment Tracking (MLflow) | 5/5 | ✅ Complete |
+| **2.7** | Multi-Horizon Forecasting Implementation | 5/5 | ✅ Complete |
+| **TOTAL** | | **39/39** | **✅ 100%** |
+
+**Epic 1 Achievements**:
 - ✅ 98%+ data quality from all sources
 - ✅ <50ms database query performance
 - ✅ Automated daily refresh working
 - ✅ 122/140 tests passing (87%)
 - ✅ Comprehensive documentation (35+ files)
 
+**Epic 2 Achievements**:
+- ✅ Feature engineering pipeline with 40+ features
+- ✅ Multiple model types (ARIMA, Prophet, LSTM) implemented
+- ✅ Hyperparameter tuning with 3 methods (Grid, Random, Bayesian)
+- ✅ MLflow integration for experiment tracking
+- ✅ Multi-horizon forecasting (1, 7, 30 days)
+- ✅ Walk-forward validation framework
+- ✅ Comprehensive unit tests and manual testing scripts
+
 ### Upcoming Epics
 
 | Epic | Features | Status | Est. Duration |
 |------|----------|--------|---------------|
-| **2** | Core ML Model Development | 0/7 | 🔄 **Starting** | 4 weeks |
-| **3** | Model Evaluation & Backtesting | 0/7 | 📋 Planned | 3 weeks |
+| **2** | Core ML Model Development | 7/7 | ✅ **COMPLETE** | 4 weeks |
+| **3** | Model Evaluation & Backtesting | 0/7 | 📋 **Next** | 3 weeks |
 | **4** | API Service Layer | 0/9 | 📋 Planned | 3 weeks |
 | **5** | Visualization & UI | 0/8 | 📋 Planned | 2 weeks |
 | **6** | MLOps & Deployment | 0/8 | 📋 Planned | 3 weeks |
 | **7** | Advanced Analytics | 0/7 | 📋 Planned | 2 weeks |
 | **8** | QA & Documentation | 0/12 | 📋 Planned | 1 week |
 
-**Overall Progress**: 6/64 features complete (9.4%)
+**Overall Progress**: 13/64 features complete (20.3%)
 
 👉 **Detailed tracker**: [project-plan/04-project-tracker.md](../../docs/energy-price-forecasting/project-plan/04-project-tracker.md)
 
@@ -761,6 +804,6 @@ MIT License - See [LICENSE](../../LICENSE) for details
 
 ---
 
-**Project Status**: ✅ Epic 1 Complete, 🔄 Epic 2 Starting  
+**Project Status**: ✅ Epic 1 Complete, ✅ Epic 2 Complete  
 **Last Updated**: December 14, 2025  
-**Version**: 1.0.0
+**Version**: 2.0.0

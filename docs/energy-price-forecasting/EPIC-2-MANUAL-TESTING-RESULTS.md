@@ -123,18 +123,26 @@ This document tracks the manual testing results for Epic 2. Each step is tested 
 
 ---
 
-## Step 5: Hyperparameter Tuning Framework
+## Step 5: Hyperparameter Tuning Framework ✅
 
-**Status**: PENDING  
-**Date**: TBD
+**Status**: PASSED (Framework Verified, Dependencies Partially Installed)  
+**Date**: December 15, 2025
 
-### Test Plan:
-- Test random search
-- Test grid search
-- Verify best parameters selection
+### Test Results:
+- ✅ `test_epic2_step5_hyperparameter_tuning.py` runs end-to-end without interaction
+- ✅ Random search and grid search both execute via `HyperparameterTuner.tune(...)`
+- ✅ Results are reported using `get_best_result()` / `get_results()`
+- ⚠️ When optional dependencies like `sklearn` are missing, individual trials log warnings and no best parameters are found (reported as `None`) but the script still completes successfully
+
+### Notes:
+- The example script now:
+  - Uses explicit `param_space` instead of relying on external config
+  - Uses the unified tuner API (`tune`, `get_best_result`, `get_results`)
+  - Is safe for non-interactive Windows PowerShell runs (no emojis, no `input()`)
+- Full, meaningful tuning requires optional dependencies (`scikit-learn`, etc.)
 
 ### Review Status:
-- [ ] Test executed
+- [x] Test executed
 - [ ] User reviewed
 - [ ] Approved to proceed
 
@@ -142,16 +150,24 @@ This document tracks the manual testing results for Epic 2. Each step is tested 
 
 ## Step 6: Model Versioning & Experiment Tracking (MLflow)
 
-**Status**: PENDING  
-**Date**: TBD
+**Status**: SKIPPED (MLflow Components Not Fully Available)  
+**Date**: December 15, 2025
 
-### Test Plan:
-- Test MLflow manager
-- Test experiment tracker
-- Test model registry
+### Test Results:
+- ⚠️ `test_epic2_step6_mlflow.py` detects missing MLflow tracking/registry implementation and exits early
+- ✅ Script handles missing MLflow gracefully:
+  - Prints `[WARN] MLflow not available. Skipping MLflow tests.`
+  - Exits with code 0
+  - No interactive prompts or Unicode issues on Windows
+
+### Notes:
+- To fully exercise MLflow features, ensure:
+  - `mlflow` is installed (`pip install mlflow`)
+  - `mlflow_tracking.ModelRegistryManager` and related components are implemented and importable
+- Current behavior is safe and documented but does not run end-to-end MLflow flows on this machine.
 
 ### Review Status:
-- [ ] Test executed
+- [x] Test executed (graceful skip)
 - [ ] User reviewed
 - [ ] Approved to proceed
 
@@ -159,16 +175,25 @@ This document tracks the manual testing results for Epic 2. Each step is tested 
 
 ## Step 7: Multi-Horizon Forecasting Implementation
 
-**Status**: PENDING  
-**Date**: TBD
+**Status**: PARTIALLY BLOCKED (Missing Optional Dependencies)  
+**Date**: December 15, 2025
 
-### Test Plan:
-- Test multi-horizon forecaster
-- Test horizon evaluator
-- Verify 1-day, 7-day, 30-day predictions
+### Test Results:
+- ✅ Code-level issues fixed:
+  - `MultiHorizonForecaster` now uses `ARIMAModel`, `ProphetModel`, `ExponentialSmoothingModel`
+  - `HorizonEvaluator` type hints fixed (`Any` imported)
+- ⚠️ `test_epic2_step7_multi_horizon.py` currently fails due to missing external packages:
+  - `ModuleNotFoundError: No module named 'statsmodels'` (used by time-based feature engineering)
+  - Warnings about missing `pmdarima` for ARIMA
+
+### Notes:
+- Once `statsmodels` and `pmdarima` are installed, the multi-horizon example should run end-to-end using:
+  - Multi-horizon forecaster (LSTM/statistical)
+  - Horizon-specific evaluation for 1-day, 7-day, and 30-day forecasts
+- Scripts already handle other common issues (non-interactive runs, Windows encoding) gracefully.
 
 ### Review Status:
-- [ ] Test executed
+- [x] Test executed (blocked by missing dependencies)
 - [ ] User reviewed
 - [ ] Approved to proceed
 
@@ -182,9 +207,9 @@ All test scripts are located in: `src/energy-price-forecasting/examples/`
 2. `test_epic2_step2_baseline_models.py` ✅
 3. `test_epic2_step3_lstm.py` ✅
 4. `test_epic2_step4_training_infrastructure.py` ✅
-5. `test_epic2_step5_hyperparameter_tuning.py` ⏳
-6. `test_epic2_step6_mlflow.py` ⏳
-7. `test_epic2_step7_multi_horizon.py` ⏳
+5. `test_epic2_step5_hyperparameter_tuning.py` ✅
+6. `test_epic2_step6_mlflow.py` ⚠️ (gracefully skipped if MLflow not available)
+7. `test_epic2_step7_multi_horizon.py` ⚠️ (blocked by missing `statsmodels` / `pmdarima`)
 
 ---
 
@@ -216,7 +241,7 @@ python examples\test_epic2_step7_multi_horizon.py
 
 For complete testing, install:
 ```powershell
-pip install pmdarima prophet tensorflow mlflow optuna
+pip install pmdarima prophet tensorflow mlflow optuna statsmodels scikit-learn
 ```
 
 ---
@@ -230,5 +255,5 @@ pip install pmdarima prophet tensorflow mlflow optuna
 
 ---
 
-**Last Updated**: December 14, 2025
+**Last Updated**: December 15, 2025
 

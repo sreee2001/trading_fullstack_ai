@@ -22,7 +22,7 @@ except ImportError:
     LSTMForecaster = None
     LSTMWithFeatures = None
 
-from models.baseline import ARIMAForecaster, ProphetForecaster, ExponentialSmoothingForecaster
+from models.baseline import ARIMAModel, ProphetModel, ExponentialSmoothingModel
 
 logger = logging.getLogger(__name__)
 
@@ -128,15 +128,15 @@ class MultiHorizonForecaster:
                 models[horizon] = model
             
             elif self.model_type == 'arima':
-                model = ARIMAForecaster(**self.model_kwargs)
+                model = ARIMAModel(**self.model_kwargs)
                 models[horizon] = model
             
             elif self.model_type == 'prophet':
-                model = ProphetForecaster(**self.model_kwargs)
+                model = ProphetModel(**self.model_kwargs)
                 models[horizon] = model
             
             elif self.model_type == 'exponential_smoothing':
-                model = ExponentialSmoothingForecaster(**self.model_kwargs)
+                model = ExponentialSmoothingModel(**self.model_kwargs)
                 models[horizon] = model
             
             else:

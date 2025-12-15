@@ -28,9 +28,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 if not MLFLOW_AVAILABLE:
-    print("\n⚠️  MLflow not available. Skipping MLflow tests.")
+    print("\n[WARN] MLflow not available. Skipping MLflow tests.")
     print("   Install with: pip install mlflow")
-    input("\nPress Enter to continue...")
     exit(0)
 
 print("="*80)

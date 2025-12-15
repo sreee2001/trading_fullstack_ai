@@ -541,16 +541,29 @@ src/energy-price-forecasting/
 
 ### Epic 2: Core ML Model Development ✅ COMPLETE
 
-| Feature | Description | Stories | Status |
-|---------|-------------|---------|--------|
-| **2.1** | Feature Engineering Pipeline | 7/7 | ✅ Complete |
-| **2.2** | Baseline Statistical Models | 5/5 | ✅ Complete |
-| **2.3** | LSTM Neural Network Model | 7/7 | ✅ Complete |
-| **2.4** | Model Training Infrastructure | 5/5 | ✅ Complete |
-| **2.5** | Hyperparameter Tuning Framework | 5/5 | ✅ Complete |
-| **2.6** | Model Versioning & Experiment Tracking (MLflow) | 5/5 | ✅ Complete |
-| **2.7** | Multi-Horizon Forecasting Implementation | 5/5 | ✅ Complete |
-| **TOTAL** | | **39/39** | **✅ 100%** |
+| Feature | Description | Stories | Status | Documentation |
+|---------|-------------|---------|--------|---------------|
+| **2.1** | Feature Engineering Pipeline | 7/7 | ✅ Complete | [Feature 2.1](docs/energy-price-forecasting/FEATURE-2-1-COMPLETE.md) |
+| **2.2** | Baseline Statistical Models | 5/5 | ✅ Complete | [Feature 2.2](docs/energy-price-forecasting/FEATURE-2-2-COMPLETE.md) |
+| **2.3** | LSTM Neural Network Model | 7/7 | ✅ Complete | [Feature 2.3](docs/energy-price-forecasting/FEATURE-2-3-COMPLETE.md) |
+| **2.4** | Model Training Infrastructure | 5/5 | ✅ Complete | [Feature 2.4](docs/energy-price-forecasting/FEATURE-2-4-COMPLETE.md) |
+| **2.5** | Hyperparameter Tuning Framework | 5/5 | ✅ Complete | [Feature 2.5](docs/energy-price-forecasting/FEATURE-2-5-COMPLETE.md) |
+| **2.6** | Model Versioning & Experiment Tracking (MLflow) | 5/5 | ✅ Complete | [Feature 2.6](docs/energy-price-forecasting/FEATURE-2-6-COMPLETE.md) |
+| **2.7** | Multi-Horizon Forecasting Implementation | 5/5 | ✅ Complete | [Feature 2.7](docs/energy-price-forecasting/FEATURE-2-7-COMPLETE.md) |
+| **TOTAL** | | **39/39** | **✅ 100%** | [Epic 2 Summary](docs/energy-price-forecasting/EPIC-2-CELEBRATION.md) |
+
+### Epic 3: Model Evaluation & Backtesting ✅ COMPLETE
+
+| Feature | Description | Stories | Status | Documentation |
+|---------|-------------|---------|--------|---------------|
+| **3.1** | Walk-Forward Validation Framework | 5/5 | ✅ Complete | [Feature 3.1](docs/energy-price-forecasting/FEATURE-3-1-COMPLETE.md) |
+| **3.2** | Statistical Metrics Calculation | 5/5 | ✅ Complete | [Feature 3.2](docs/energy-price-forecasting/FEATURE-3-2-COMPLETE.md) |
+| **3.3** | Trading Signal Generation Logic | 5/5 | ✅ Complete | [Feature 3.3](docs/energy-price-forecasting/FEATURE-3-3-COMPLETE.md) |
+| **3.4** | Trading Simulation Engine | 4/4 | ✅ Complete | [Feature 3.4](docs/energy-price-forecasting/FEATURE-3-4-COMPLETE.md) |
+| **3.5** | Risk Metrics Module | 5/5 | ✅ Complete | [Feature 3.5](docs/energy-price-forecasting/FEATURE-3-5-COMPLETE.md) |
+| **3.6** | Model Comparison Dashboard | 3/3 | ✅ Complete | [Feature 3.6](docs/energy-price-forecasting/FEATURE-3-6-COMPLETE.md) |
+| **3.7** | Backtesting Visualization Tools | 6/6 | ✅ Complete | [Feature 3.7](docs/energy-price-forecasting/FEATURE-3-7-COMPLETE.md) |
+| **TOTAL** | | **33/33** | **✅ 100%** | [Test Cases](docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
 
 **Epic 1 Achievements**:
 - ✅ 98%+ data quality from all sources
@@ -570,17 +583,18 @@ src/energy-price-forecasting/
 
 ### Upcoming Epics
 
-| Epic | Features | Status | Est. Duration |
-|------|----------|--------|---------------|
-| **2** | Core ML Model Development | 7/7 | ✅ **COMPLETE** | 4 weeks |
-| **3** | Model Evaluation & Backtesting | 0/7 | 📋 **Next** | 3 weeks |
-| **4** | API Service Layer | 0/9 | 📋 Planned | 3 weeks |
-| **5** | Visualization & UI | 0/8 | 📋 Planned | 2 weeks |
-| **6** | MLOps & Deployment | 0/8 | 📋 Planned | 3 weeks |
-| **7** | Advanced Analytics | 0/7 | 📋 Planned | 2 weeks |
-| **8** | QA & Documentation | 0/12 | 📋 Planned | 1 week |
+| Epic | Features | Status | Est. Duration | Documentation |
+|------|----------|--------|---------------|---------------|
+| **1** | Data Foundation & Infrastructure | 6/6 | ✅ **COMPLETE** | 3 weeks | [Epic 1 Status](docs/energy-price-forecasting/EPIC-1-STATUS-REPORT.md) |
+| **2** | Core ML Model Development | 7/7 | ✅ **COMPLETE** | 4 weeks | [Epic 2 Celebration](docs/energy-price-forecasting/EPIC-2-CELEBRATION.md) |
+| **3** | Model Evaluation & Backtesting | 7/7 | ✅ **COMPLETE** | 3 weeks | [Test Cases](docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
+| **4** | API Service Layer | 0/9 | 📋 **Next** | 3 weeks | [Epic Breakdown](docs/energy-price-forecasting/project-plan/02-epic-breakdown.md) |
+| **5** | Visualization & UI | 0/8 | 📋 Planned | 2 weeks | [Feature Breakdown](docs/energy-price-forecasting/project-plan/03-feature-breakdown.md) |
+| **6** | MLOps & Deployment | 0/8 | 📋 Planned | 3 weeks | [Project Tracker](docs/energy-price-forecasting/project-plan/04-project-tracker.md) |
+| **7** | Advanced Analytics | 0/7 | 📋 Planned | 2 weeks | [User Stories](docs/energy-price-forecasting/user-stories/) |
+| **8** | QA & Documentation | 0/12 | 📋 Planned | 1 week | [Testing Guide](docs/energy-price-forecasting/TESTING-GUIDE.md) |
 
-**Overall Progress**: 13/64 features complete (20.3%)
+**Overall Progress**: 20/64 features complete (31.3%)
 
 👉 **Detailed tracker**: [project-plan/04-project-tracker.md](../../docs/energy-price-forecasting/project-plan/04-project-tracker.md)
 
@@ -804,6 +818,7 @@ MIT License - See [LICENSE](../../LICENSE) for details
 
 ---
 
-**Project Status**: ✅ Epic 1 Complete, ✅ Epic 2 Complete  
-**Last Updated**: December 14, 2025  
-**Version**: 2.0.0
+**Project Status**: ✅ Epic 1 Complete, ✅ Epic 2 Complete, ✅ Epic 3 Complete  
+**Last Updated**: December 15, 2025  
+**Version**: 3.0.0  
+**Progress**: 20/64 features (31.3%), 100/175+ user stories complete

@@ -99,7 +99,7 @@ This monorepo contains a production-ready **Energy Price Forecasting System** bu
 
 An end-to-end machine learning system for forecasting WTI crude oil, Brent crude, and natural gas prices.
 
-### Current Status: **Epic 1 & Epic 2 COMPLETE ✅**
+### Current Status: **Epic 1, 2 & 3 COMPLETE ✅**
 
 **Epic 1 Completed** (6 features, 28 user stories):
 - ✅ Multi-source data ingestion (EIA, FRED, Yahoo Finance)
@@ -118,9 +118,17 @@ An end-to-end machine learning system for forecasting WTI crude oil, Brent crude
 - ✅ Model versioning & experiment tracking (MLflow integration)
 - ✅ Multi-horizon forecasting (1-day, 7-day, 30-day predictions)
 
+**Epic 3 Completed** (7 features, 33 user stories):
+- ✅ Walk-forward validation framework (expanding/rolling windows)
+- ✅ Statistical metrics calculation (RMSE, MAE, MAPE, R², Directional Accuracy)
+- ✅ Trading signal generation logic (5 strategies)
+- ✅ Trading simulation engine (P&L tracking, win rate, transaction costs)
+- ✅ Risk metrics module (Sharpe Ratio, Sortino Ratio, Max Drawdown)
+- ✅ Model comparison dashboard (statistical + risk metrics, export)
+- ✅ Backtesting visualization tools (6 plot types, comprehensive reports)
+
 **Next Up**:
-- 📋 Epic 3: Model Evaluation & Backtesting
-- 📋 Epic 4: API Service Layer (FastAPI)
+- 📋 Epic 4: API Service Layer (FastAPI) - 9 features planned
 - 📋 Epic 5-8: UI, MLOps, Advanced Analytics, QA
 
 👉 **See detailed progress**: [Project Progress Tracker](#-development-progress)
@@ -313,21 +321,21 @@ trading_fullstack_ai/
 - 98%+ real data quality
 - Production-ready and deployed
 
-**Overall Project Status**: 12.5% complete (1/8 epics)
+**Overall Project Status**: 31.3% complete (3/8 epics, 20/64 features)
 
 ### Detailed Epic Status
 
-| Epic | Description | Features | Progress | Status |
-|------|-------------|----------|----------|--------|
-| **1** | Data Foundation & Infrastructure | 6/6 | 100% | ✅ **COMPLETE** |
-| **2** | Core ML Model Development | 0/7 | 0% | 📋 Next |
-| **3** | Model Evaluation & Backtesting | 0/7 | 0% | 📋 Planned |
-| **4** | API Service Layer (FastAPI) | 0/9 | 0% | 📋 Planned |
-| **5** | Visualization & User Interface | 0/8 | 0% | 📋 Planned |
-| **6** | MLOps & Deployment Pipeline | 0/8 | 0% | 📋 Planned |
-| **7** | Advanced Analytics & Insights | 0/7 | 0% | 📋 Planned |
-| **8** | Quality Assurance & Documentation | 0/12 | 0% | 📋 Planned |
-| **TOTAL** | | **6/64** | **9.4%** | 🔄 In Progress |
+| Epic | Description | Features | Progress | Status | Documentation |
+|------|-------------|----------|----------|--------|---------------|
+| **1** | Data Foundation & Infrastructure | 6/6 | 100% | ✅ **COMPLETE** | [Epic 1 Status](docs/energy-price-forecasting/EPIC-1-STATUS-REPORT.md) |
+| **2** | Core ML Model Development | 7/7 | 100% | ✅ **COMPLETE** | [Epic 2 Celebration](docs/energy-price-forecasting/EPIC-2-CELEBRATION.md) |
+| **3** | Model Evaluation & Backtesting | 7/7 | 100% | ✅ **COMPLETE** | [Manual Test Cases](docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
+| **4** | API Service Layer (FastAPI) | 0/9 | 0% | 📋 **Next** | [Epic Breakdown](docs/energy-price-forecasting/project-plan/02-epic-breakdown.md) |
+| **5** | Visualization & User Interface | 0/8 | 0% | 📋 Planned | [Feature Breakdown](docs/energy-price-forecasting/project-plan/03-feature-breakdown.md) |
+| **6** | MLOps & Deployment Pipeline | 0/8 | 0% | 📋 Planned | [Project Tracker](docs/energy-price-forecasting/project-plan/04-project-tracker.md) |
+| **7** | Advanced Analytics & Insights | 0/7 | 0% | 📋 Planned | [User Stories](docs/energy-price-forecasting/user-stories/) |
+| **8** | Quality Assurance & Documentation | 0/12 | 0% | 📋 Planned | [Testing Guide](docs/energy-price-forecasting/TESTING-GUIDE.md) |
+| **TOTAL** | | **20/64** | **31.3%** | 🔄 In Progress | |
 
 ### Epic 1 Feature Breakdown ✅
 
@@ -340,9 +348,13 @@ trading_fullstack_ai/
 | 1.5: Data Validation Framework | 6/6 | ✅ Complete | Excellent |
 | 1.6: Pipeline Orchestration | 5/5 | ✅ Complete | Success |
 
-👉 **Full progress tracker**: [docs/energy-price-forecasting/project-plan/04-project-tracker.md](docs/energy-price-forecasting/project-plan/04-project-tracker.md)
-
-👉 **Epic 1 detailed analysis**: [EPIC-1-COMPREHENSIVE-ANALYSIS.md](docs/energy-price-forecasting/EPIC-1-COMPREHENSIVE-ANALYSIS.md)
+👉 **Full progress tracker**: [Project Tracker](docs/energy-price-forecasting/project-plan/04-project-tracker.md)  
+👉 **Epic Breakdown**: [Epic Breakdown](docs/energy-price-forecasting/project-plan/02-epic-breakdown.md)  
+👉 **Feature Breakdown**: [Feature Breakdown](docs/energy-price-forecasting/project-plan/03-feature-breakdown.md)  
+👉 **User Stories**: [Epics 1-3](docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md) | [Epics 4-8](docs/energy-price-forecasting/user-stories/01-user-stories-epics-4-8.md)  
+👉 **Manual Test Cases**: [Epic 3 & 4 Test Cases](docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md)  
+👉 **Epic 1 Analysis**: [Comprehensive Analysis](docs/energy-price-forecasting/EPIC-1-COMPREHENSIVE-ANALYSIS.md)  
+👉 **Epic 2 Summary**: [Epic 2 Celebration](docs/energy-price-forecasting/EPIC-2-CELEBRATION.md)
 
 ---
 
@@ -535,5 +547,7 @@ If you find this project helpful or interesting, please consider giving it a sta
 
 **Last Updated**: December 14, 2025  
 **Project Status**: Active Development  
-**Current Epic**: 2 (ML Model Development)
+**Current Epic**: 4 (API Service Layer)  
+**Completed Epics**: 1, 2, 3 (20/64 features, 100/175+ user stories)  
+**Last Updated**: December 15, 2025
 

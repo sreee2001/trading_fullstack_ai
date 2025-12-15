@@ -294,7 +294,13 @@ trading_fullstack_ai/
 │       │   ├── utils.py                   # Connection management
 │       │   ├── init.sql                   # Schema initialization
 │       │   └── migrations/                # Database migrations
-│       ├── tests/                         # Unit tests (140+ tests)
+│       ├── tests/                         # Unit tests (200+ tests)
+│       ├── models/                        # ML models (ARIMA, Prophet, LSTM)
+│       ├── feature_engineering/           # Feature engineering pipeline
+│       ├── training/                      # Training infrastructure
+│       ├── evaluation/                    # Model evaluation & backtesting
+│       ├── mlflow_tracking/               # MLflow integration
+│       └── multi_horizon/                 # Multi-horizon forecasting
 │       ├── examples/                      # Example scripts
 │       ├── logs/                          # Pipeline & scheduler logs
 │       ├── docker-compose.yml             # Database container

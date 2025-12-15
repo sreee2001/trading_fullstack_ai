@@ -236,3 +236,5 @@ wsl docker exec energy_forecasting_db psql -U energy_user -d energy_forecasting 
 
 **Status:** Ready for data ingestion and ML development! 🚀
 
+
+

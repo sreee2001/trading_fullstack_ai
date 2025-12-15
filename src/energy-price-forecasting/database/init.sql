@@ -202,3 +202,5 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO energy_user;
 -- JOIN data_sources ds ON pd.source_id = ds.id
 -- GROUP BY c.symbol, ds.name;
 
+
+

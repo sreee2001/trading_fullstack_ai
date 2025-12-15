@@ -221,3 +221,5 @@ The database infrastructure is fully tested and production-ready. You can now:
 
 **See full details in:** `docs/energy-price-forecasting/IMPLEMENTATION-SESSION-6.md`
 
+
+

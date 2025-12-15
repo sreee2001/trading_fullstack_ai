@@ -25,7 +25,7 @@ try:
     print("Connecting...")
     
     conn = psycopg.connect(conn_string)
-    print("✅ SUCCESS! Connected to database")
+    print("SUCCESS! Connected to database")
     
     # Test query
     cursor = conn.cursor()
@@ -35,11 +35,13 @@ try:
     
     cursor.close()
     conn.close()
-    print("✅ Connection closed successfully")
+    print("Connection closed successfully")
     
 except Exception as e:
-    print(f"❌ ERROR: {type(e).__name__}")
+    print(f"ERROR: {type(e).__name__}")
     print(f"   Message: {e}")
     import traceback
     traceback.print_exc()
+
+
 

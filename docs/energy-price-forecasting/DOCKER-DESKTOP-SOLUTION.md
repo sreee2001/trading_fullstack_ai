@@ -195,3 +195,5 @@ The database is **100% functional**. The only issue is **WSL2 networking** preve
 
 **Ready to switch to Docker Desktop?** Let me know and I'll help! 🚀
 
+
+

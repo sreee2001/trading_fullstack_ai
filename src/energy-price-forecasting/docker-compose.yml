@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+  # PostgreSQL + TimescaleDB Database
   timescaledb:
     image: timescale/timescaledb:latest-pg15
     container_name: energy_forecasting_db
@@ -19,9 +18,83 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - energy_forecasting_network
+
+  # Redis for caching and rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: energy_forecasting_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - energy_forecasting_network
+
+  # FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: energy_forecasting_api
+    restart: unless-stopped
+    environment:
+      # Database
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_NAME: energy_forecasting
+      DB_USER: energy_user
+      DB_PASSWORD: energy_password
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # API Settings
+      API_ENV: development
+      API_DEBUG: "true"
+      # External APIs (set these in .env file)
+      EIA_API_KEY: ${EIA_API_KEY:-}
+      FRED_API_KEY: ${FRED_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app/api
+      - ./models:/app/models
+      - ./mlruns:/app/mlruns
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - energy_forecasting_network
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: energy_forecasting_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - energy_forecasting_network
 
 volumes:
   timescale_data:
+  redis_data:
 
-
-
+networks:
+  energy_forecasting_network:
+    driver: bridge

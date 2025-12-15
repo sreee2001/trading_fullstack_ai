@@ -507,7 +507,11 @@ class DataPipelineOrchestrator:
                             source=row['source'],
                             timestamp=row['timestamp'],
                             price=float(row['price']),
-                            volume=float(row.get('volume', 0)) if pd.notna(row.get('volume')) else None
+                            volume=float(row.get('volume', 0)) if pd.notna(row.get('volume')) else None,
+                            open_price=float(row.get('open')) if pd.notna(row.get('open')) else None,
+                            high_price=float(row.get('high')) if pd.notna(row.get('high')) else None,
+                            low_price=float(row.get('low')) if pd.notna(row.get('low')) else None,
+                            close_price=float(row.get('close')) if pd.notna(row.get('close')) else None
                         )
                         records_stored += 1
                     except Exception as e:

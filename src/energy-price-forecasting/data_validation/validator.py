@@ -523,7 +523,7 @@ class DataValidator:
         consistency_score = validation_results.get('consistency', {}).get('consistency_score', 100.0)
         
         # Calculate outlier score
-        if 'outliers' in df.columns:
+        if 'outlier_any' in df.columns:
             outlier_rate = df['outlier_any'].sum() / len(df) if len(df) > 0 else 0
         else:
             outlier_rate = 0

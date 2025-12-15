@@ -11,12 +11,16 @@ from typing import Dict, Any
 import logging
 
 from api.config import get_settings
+from api.logging_config import setup_api_logging, get_logger
 
 # Get application settings
 settings = get_settings()
 
-# Configure logging
-logger = logging.getLogger(__name__)
+# Setup logging
+setup_api_logging()
+
+# Get logger for this module
+logger = get_logger(__name__)
 
 # Initialize FastAPI application
 app = FastAPI(
@@ -36,6 +40,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add request/response logging middleware
+from api.logging_config import RequestResponseLogger
+app.add_middleware(RequestResponseLogger)
 
 
 @app.get("/", tags=["Root"])

@@ -83,6 +83,9 @@ def train_all_models(
     # Initialize model service (for checking existing models)
     model_service = get_model_service()
     
+    # Initialize model validator
+    validator = ModelValidator()
+    
     results = {
         'experiment_name': experiment_name,
         'start_time': datetime.now().isoformat(),
@@ -199,6 +202,15 @@ def train_all_models(
                 
                 logger.info(f"Successfully trained {model_id}")
                 logger.info(f"Metrics: {metrics}")
+                
+                # Validate model against thresholds
+                validation_result = validator.validate(metrics)
+                metrics['validation'] = validation_result
+                
+                if validation_result['passed']:
+                    logger.info(f"Model {model_id} passed validation")
+                else:
+                    logger.warning(f"Model {model_id} failed validation: {validation_result['summary']}")
                 
                 # Log parameters and metrics to MLflow
                 tracker.log_params({

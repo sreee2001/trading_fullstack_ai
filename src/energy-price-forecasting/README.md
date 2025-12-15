@@ -608,7 +608,9 @@ src/energy-price-forecasting/
 - ✅ Story 1.5.1-1.5.6: Validation framework
 - ✅ Story 1.6.1-1.6.5: Pipeline orchestration
 
-👉 **All user stories**: [user-stories/00-user-stories-epics-1-3.md](../../docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md)
+👉 **All user stories**: 
+- [Epics 1-3](../../docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md) (100+ stories)
+- [Epics 4-8](../../docs/energy-price-forecasting/user-stories/01-user-stories-epics-4-8.md) (75+ stories)
 
 ---
 
@@ -638,7 +640,14 @@ src/energy-price-forecasting/
 **Project Planning**:
 - [Epic Breakdown](../../docs/energy-price-forecasting/project-plan/02-epic-breakdown.md) - All 8 epics defined
 - [Feature Breakdown](../../docs/energy-price-forecasting/project-plan/03-feature-breakdown.md) - 64 features detailed
-- [Project Tracker](../../docs/energy-price-forecasting/project-plan/04-project-tracker.md) - Real-time progress
+- [Project Tracker](../../docs/energy-price-forecasting/project-plan/04-project-tracker.md) - Real-time progress (31.3% complete)
+- [User Stories (Epics 1-3)](../../docs/energy-price-forecasting/user-stories/00-user-stories-epics-1-3.md) - 100+ stories
+- [User Stories (Epics 4-8)](../../docs/energy-price-forecasting/user-stories/01-user-stories-epics-4-8.md) - 75+ stories
+
+**Testing & Quality Assurance**:
+- [Manual Test Cases (Epic 3 & 4)](../../docs/energy-price-forecasting/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) - 89 test cases
+- [Epic 2 Manual Testing Guide](../../docs/energy-price-forecasting/EPIC-2-MANUAL-TESTING-GUIDE.md) - Step-by-step guide
+- [Testing Guide](../../docs/energy-price-forecasting/TESTING-GUIDE.md) - Complete testing documentation
 
 **Session Reports**: [session-reports/](../../docs/energy-price-forecasting/session-reports/) (8 detailed implementation reports)
 

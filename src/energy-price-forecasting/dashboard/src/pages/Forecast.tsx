@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import ForecastChart from '../components/charts/ForecastChart';
 import CombinedChart from '../components/charts/CombinedChart';
 import HistoricalPriceChart from '../components/charts/HistoricalPriceChart';
+import ComparisonChart from '../components/charts/ComparisonChart';
 import { forecastService } from '../services/forecastService';
 import { historicalService } from '../services/historicalService';
 import { useApp } from '../context/AppContext';
@@ -24,8 +25,10 @@ const Forecast: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [forecast, setForecast] = useState<ForecastResponse | null>(null);
   const [historicalData, setHistoricalData] = useState<HistoricalDataResponse | null>(null);
+  const [actualData, setActualData] = useState<HistoricalDataResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showCombined, setShowCombined] = useState<boolean>(false);
+  const [showComparison, setShowComparison] = useState<boolean>(false);
 
   const handleGenerateForecast = async () => {
     if (!state.isAuthenticated) {
@@ -42,7 +45,11 @@ const Forecast: React.FC = () => {
       const historicalStartDate = new Date(endDate);
       historicalStartDate.setDate(historicalStartDate.getDate() - 30);
 
-      const [forecastResponse, historicalResponse] = await Promise.all([
+      // Calculate end date for actual data (startDate + horizon days)
+      const actualEndDate = new Date(startDate);
+      actualEndDate.setDate(actualEndDate.getDate() + horizon);
+
+      const [forecastResponse, historicalResponse, actualResponse] = await Promise.all([
         forecastService.generateForecast({
           commodity,
           horizon,
@@ -54,10 +61,17 @@ const Forecast: React.FC = () => {
           end_date: startDate,
           limit: 1000,
         }),
+        historicalService.getHistoricalData({
+          commodity,
+          start_date: startDate,
+          end_date: actualEndDate.toISOString().split('T')[0],
+          limit: 1000,
+        }),
       ]);
 
       setForecast(forecastResponse);
       setHistoricalData(historicalResponse);
+      setActualData(actualResponse);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate forecast');
     } finally {
@@ -126,14 +140,34 @@ const Forecast: React.FC = () => {
         <div className="forecast-results">
           <div className="chart-toggle">
             <button
-              onClick={() => setShowCombined(!showCombined)}
+              onClick={() => {
+                setShowCombined(!showCombined);
+                setShowComparison(false);
+              }}
               className="btn-secondary"
             >
               {showCombined ? 'Show Forecast Only' : 'Show Combined View'}
             </button>
+            {actualData && actualData.data.length > 0 && (
+              <button
+                onClick={() => {
+                  setShowComparison(!showComparison);
+                  setShowCombined(false);
+                }}
+                className="btn-secondary"
+              >
+                {showComparison ? 'Show Forecast Only' : 'Show Forecast vs Actual'}
+              </button>
+            )}
           </div>
 
-          {showCombined && historicalData ? (
+          {showComparison && actualData ? (
+            <ComparisonChart
+              predictions={forecast.predictions}
+              actualPrices={actualData.data}
+              commodity={forecast.commodity}
+            />
+          ) : showCombined && historicalData ? (
             <CombinedChart
               historicalData={historicalData.data}
               predictions={forecast.predictions}
@@ -146,7 +180,7 @@ const Forecast: React.FC = () => {
             />
           )}
 
-          {historicalData && !showCombined && (
+          {historicalData && !showCombined && !showComparison && (
             <div className="historical-section">
               <HistoricalPriceChart
                 data={historicalData.data}

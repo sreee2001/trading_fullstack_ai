@@ -1,0 +1,57 @@
+/* Comparison Chart Styles */
+
+.comparison-chart {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-chart h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.accuracy-metrics {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.accuracy-metrics h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.25rem;
+}
+
+.metric-label {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.metric-value {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+}
+

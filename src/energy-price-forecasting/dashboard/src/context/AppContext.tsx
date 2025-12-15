@@ -5,7 +5,8 @@
  * Manages application-wide state such as API key, user preferences, etc.
  */
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import type { ReactNode } from 'react';
 
 // Application State Interface
 interface AppState {

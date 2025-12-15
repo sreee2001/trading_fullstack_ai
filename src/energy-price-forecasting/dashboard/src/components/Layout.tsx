@@ -4,7 +4,7 @@
  * Main layout wrapper with navigation and header.
  */
 
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './Layout.css';

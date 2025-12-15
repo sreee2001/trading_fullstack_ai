@@ -45,6 +45,18 @@ app.add_middleware(
 from api.logging_config import RequestResponseLogger
 app.add_middleware(RequestResponseLogger)
 
+# Register startup and shutdown event handlers
+from api.lifecycle import startup_event, shutdown_event
+
+@app.on_event("startup")
+async def startup():
+    """Application startup event handler."""
+    await startup_event()
+
+@app.on_event("shutdown")
+async def shutdown():
+    """Application shutdown event handler."""
+    await shutdown_event()
 
 @app.get("/", tags=["Root"])
 def root() -> Dict[str, Any]:

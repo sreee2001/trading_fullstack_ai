@@ -63,10 +63,25 @@ async def startup_event():
             logger.warning("Database URL not configured. Skipping database initialization.")
         
         # Optionally load ML models into memory
-        # This is a placeholder - actual model loading will be implemented
-        # when model endpoints are created
-        logger.info("ML models will be loaded on-demand")
-        _ml_models = {}
+        # Models can be preloaded at startup or loaded on-demand (lazy loading)
+        from api.services.model_service import get_model_service
+        
+        model_service = get_model_service()
+        
+        # Check if preloading is enabled
+        if hasattr(settings, 'preload_models_at_startup') and settings.preload_models_at_startup:
+            logger.info("Preloading ML models at startup...")
+            try:
+                model_service.preload_models(
+                    commodities=["WTI", "BRENT", "NG"],
+                    model_types=["lstm"]  # Can be extended
+                )
+            except Exception as e:
+                logger.warning(f"Model preloading failed: {e}. Models will be loaded on-demand.")
+        else:
+            logger.info("ML models will be loaded on-demand (lazy loading)")
+        
+        _ml_models = model_service.models
         
         logger.info("Startup complete")
         

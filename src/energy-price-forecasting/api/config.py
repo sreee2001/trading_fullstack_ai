@@ -130,6 +130,23 @@ class Settings(BaseSettings):
         description="Redis database number"
     )
     
+    # Model Loading
+    preload_models_at_startup: bool = Field(
+        default=False,
+        alias="PRELOAD_MODELS",
+        description="Whether to preload models at startup (default: False, lazy loading)"
+    )
+    model_base_path: Optional[str] = Field(
+        default=None,
+        alias="MODEL_BASE_PATH",
+        description="Base path for disk-based model files"
+    )
+    use_mlflow: bool = Field(
+        default=True,
+        alias="USE_MLFLOW",
+        description="Whether to use MLflow model registry (default: True)"
+    )
+    
     @field_validator("log_level")
     @classmethod
     def validate_log_level(cls, v: str) -> str:

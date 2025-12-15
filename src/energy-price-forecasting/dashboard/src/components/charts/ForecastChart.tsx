@@ -64,12 +64,13 @@ const ForecastChart: React.FC<ForecastChartProps> = ({
           />
           <Tooltip
             labelFormatter={(value) => format(new Date(value), 'MMM dd, yyyy')}
-            formatter={(value: unknown, name: string) => {
+            formatter={(value: unknown, name?: string) => {
               const numValue = typeof value === 'number' ? value : 0;
+              const displayName = name || 'Value';
               if (name === 'price') return [`$${numValue.toFixed(2)}`, 'Forecast'];
               if (name === 'confidenceLower') return [`$${numValue.toFixed(2)}`, 'Lower Bound'];
               if (name === 'confidenceUpper') return [`$${numValue.toFixed(2)}`, 'Upper Bound'];
-              return [`$${numValue.toFixed(2)}`, name];
+              return [`$${numValue.toFixed(2)}`, displayName];
             }}
           />
           <Legend />

@@ -82,10 +82,11 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
           />
           <Tooltip
             labelFormatter={(value) => format(new Date(value), 'MMM dd, yyyy')}
-            formatter={(value: unknown, name: string) => {
-              if (value === null || value === undefined) return [null, name];
+            formatter={(value: unknown, name?: string) => {
+              const displayName = name || 'Value';
+              if (value === null || value === undefined) return [null, displayName];
               const numValue = typeof value === 'number' ? value : 0;
-              return [`$${numValue.toFixed(2)}`, name];
+              return [`$${numValue.toFixed(2)}`, displayName];
             }}
           />
           <Legend />

@@ -11,7 +11,7 @@ import HistoricalPriceChart from '../components/charts/HistoricalPriceChart';
 import { forecastService } from '../services/forecastService';
 import { historicalService } from '../services/historicalService';
 import { useApp } from '../context/AppContext';
-import type { ForecastRequest, ForecastResponse, HistoricalDataResponse } from '../types/api';
+import type { ForecastResponse, HistoricalDataResponse } from '../types/api';
 import './Forecast.css';
 
 const Forecast: React.FC = () => {

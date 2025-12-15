@@ -6,7 +6,6 @@
 
 import React from 'react';
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -65,11 +64,12 @@ const ForecastChart: React.FC<ForecastChartProps> = ({
           />
           <Tooltip
             labelFormatter={(value) => format(new Date(value), 'MMM dd, yyyy')}
-            formatter={(value: number, name: string) => {
-              if (name === 'price') return [`$${value.toFixed(2)}`, 'Forecast'];
-              if (name === 'confidenceLower') return [`$${value.toFixed(2)}`, 'Lower Bound'];
-              if (name === 'confidenceUpper') return [`$${value.toFixed(2)}`, 'Upper Bound'];
-              return [`$${value.toFixed(2)}`, name];
+            formatter={(value: unknown, name: string) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              if (name === 'price') return [`$${numValue.toFixed(2)}`, 'Forecast'];
+              if (name === 'confidenceLower') return [`$${numValue.toFixed(2)}`, 'Lower Bound'];
+              if (name === 'confidenceUpper') return [`$${numValue.toFixed(2)}`, 'Upper Bound'];
+              return [`$${numValue.toFixed(2)}`, name];
             }}
           />
           <Legend />

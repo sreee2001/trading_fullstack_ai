@@ -56,7 +56,10 @@ const HistoricalPriceChart: React.FC<HistoricalPriceChartProps> = ({
           />
           <Tooltip
             labelFormatter={(value) => format(new Date(value), 'MMM dd, yyyy')}
-            formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
+            formatter={(value: unknown) => {
+              const numValue = typeof value === 'number' ? value : 0;
+              return [`$${numValue.toFixed(2)}`, 'Price'];
+            }}
           />
           <Legend />
           <Line

@@ -19,6 +19,7 @@ fastapi==0.108.0
 uvicorn[standard]==0.25.0
 pydantic==2.5.3
 pydantic-settings==2.1.0
+httpx>=0.25.0  # Required for FastAPI TestClient
 
 # ML frameworks
 # torch>=2.2.0  # PyTorch - uncomment if using (Python 3.13 compatible)

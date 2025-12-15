@@ -113,18 +113,16 @@ class TestRateLimiter:
     
     def test_get_rate_limiter_different_limits(self):
         """Test get_rate_limiter creates new instance for different limits."""
-        with patch('api.cache.rate_limiter.RateLimiter') as mock_limiter_class:
-            mock_instance1 = MagicMock()
-            mock_instance1.requests_per_minute = 100
-            mock_instance2 = MagicMock()
-            mock_instance2.requests_per_minute = 200
-            mock_limiter_class.side_effect = [mock_instance1, mock_instance2]
-            
-            limiter1 = get_rate_limiter(requests_per_minute=100)
-            limiter2 = get_rate_limiter(requests_per_minute=200)
-            
-            assert limiter1 is not limiter2
-            assert mock_limiter_class.call_count == 2
+        # Clear global singleton
+        import api.cache.rate_limiter
+        api.cache.rate_limiter._rate_limiter = None
+        
+        limiter1 = get_rate_limiter(requests_per_minute=100)
+        limiter2 = get_rate_limiter(requests_per_minute=200)
+        
+        assert limiter1 is not limiter2
+        assert limiter1.requests_per_minute == 100
+        assert limiter2.requests_per_minute == 200
 
 
 class TestRateLimitMiddleware:

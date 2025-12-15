@@ -1,0 +1,138 @@
+/* Trade History Table Styles */
+
+.trade-history-table {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.table-header h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.trade-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.stat-item strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.stat-item strong.positive {
+  color: #10b981;
+}
+
+.stat-item strong.negative {
+  color: #ef4444;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+thead {
+  background-color: #f8fafc;
+}
+
+th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+th.sortable:hover {
+  background-color: #f1f5f9;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+tbody tr.winning-trade {
+  background-color: #f0fdf4;
+}
+
+tbody tr.losing-trade {
+  background-color: #fef2f2;
+}
+
+.position-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.position-long {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.position-short {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.positive {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.negative {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: scroll;
+  }
+
+  table {
+    min-width: 900px;
+  }
+}
+

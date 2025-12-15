@@ -84,10 +84,8 @@ try:
     prophet.fit(prophet_train)
     print("[OK] Prophet model trained")
 
-    # Predict
-    future_dates = pd.date_range(train_data.index[-1], periods=len(test_data)+1, freq='D')[1:]
-    prophet_future = pd.DataFrame({'ds': future_dates})
-    forecast_prophet = prophet.predict(prophet_future)
+    # Predict (ProphetModel.predict expects steps parameter, not DataFrame)
+    forecast_prophet = prophet.predict(steps=len(test_data))
     forecast_values = forecast_prophet['yhat'].values
 
     print(f"[OK] Predictions generated: {len(forecast_values)} steps")
@@ -106,29 +104,38 @@ print("\n[4/5] Model Comparison...")
 try:
     from models.baseline.model_comparison import ModelComparison
     
-    models = {}
-    if arima:
-        models['ARIMA'] = arima
-    if prophet:
-        models['Prophet'] = prophet
-    
-    if models:
+    if arima or prophet:
         comparator = ModelComparison()
-        comparison_results = comparator.compare_models(
-            train_data=train_data,
-            test_data=test_data,
-            models=models
-        )
+        
+        if arima:
+            comparator.add_model('ARIMA', arima)
+        if prophet:
+            comparator.add_model('Prophet', prophet)
+        
+        # Train all models
+        print("   Training models for comparison...")
+        comparator.train_all(train_data)
+        
+        # Predict all models
+        print("   Generating predictions for comparison...")
+        predictions_dict = comparator.predict_all(steps=len(test_data))
+        
+        # Evaluate all models
+        print("   Evaluating models...")
+        comparison_results = comparator.evaluate_all(test_data)
         
         print("\n   Comparison Results:")
         print(comparison_results)
         
-        best_model = comparator.get_best_model(comparison_results, metric='RMSE')
-        print(f"\n   [OK] Best model (by RMSE): {best_model}")
+        # Get best model (uses default metric from evaluate_all)
+        best_model = comparator.get_best_model()
+        print(f"\n   [OK] Best model: {best_model}")
     else:
         print("   No models available for comparison")
 except Exception as e:
     print(f"   Model comparison skipped: {e}")
+    import traceback
+    traceback.print_exc()
 
 print("\n[5/5] Summary:")
 if metrics_arima:

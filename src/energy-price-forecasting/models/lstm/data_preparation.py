@@ -119,10 +119,23 @@ class SequenceDataPreparator:
         X_train_raw = train_data[feature_cols].values
         y_train_raw = train_data[target_column].values.reshape(-1, 1)
         
-        # Fit scaler on training data
+        # Fit scaler on training data (reset scaler if already fitted with different feature count)
         logger.info("Fitting scaler on training data...")
+        # Reset scaler if feature count changed (for LSTMWithFeatures case)
+        if self.is_fitted and X_train_raw.shape[1] != self.scaler.n_features_in_:
+            logger.info(f"Resetting scaler: previous features={self.scaler.n_features_in_}, new features={X_train_raw.shape[1]}")
+            if isinstance(self.scaler, MinMaxScaler):
+                self.scaler = MinMaxScaler()
+            else:
+                self.scaler = StandardScaler()
         X_train_scaled = self.scaler.fit_transform(X_train_raw)
-        y_train_scaled = self.scaler.fit_transform(y_train_raw)
+        # Use separate scaler for target (y) to avoid conflicts
+        if not hasattr(self, 'y_scaler'):
+            if isinstance(self.scaler, MinMaxScaler):
+                self.y_scaler = MinMaxScaler()
+            else:
+                self.y_scaler = StandardScaler()
+        y_train_scaled = self.y_scaler.fit_transform(y_train_raw)
         self.is_fitted = True
         
         # Create sequences
@@ -141,7 +154,7 @@ class SequenceDataPreparator:
             
             # Transform test data using fitted scaler
             X_test_scaled = self.scaler.transform(X_test_raw)
-            y_test_scaled = self.scaler.transform(y_test_raw)
+            y_test_scaled = self.y_scaler.transform(y_test_raw)
             
             X_test, y_test = self._create_sequences(X_test_scaled, y_test_scaled)
             
@@ -197,7 +210,12 @@ class SequenceDataPreparator:
         if data.ndim == 1:
             data = data.reshape(-1, 1)
         
-        return self.scaler.inverse_transform(data)
+        # Use y_scaler for target predictions (1D), main scaler for features (multi-D)
+        # If y_scaler exists and data shape matches (single column), use y_scaler
+        if hasattr(self, 'y_scaler') and data.shape[1] == 1:
+            return self.y_scaler.inverse_transform(data)
+        else:
+            return self.scaler.inverse_transform(data)
     
     def get_feature_count(self) -> int:
         """

@@ -121,13 +121,15 @@ class LSTMWithFeatures:
         
         # Train LSTM model
         logger.info("Training LSTM model on engineered features...")
+        # Remove target_column from kwargs if present to avoid duplicate
+        fit_kwargs = {k: v for k, v in kwargs.items() if k not in ('target_column', 'target_col')}
         self.lstm_forecaster.fit(
             train_features,
             validation_data=val_features,
             target_column=target_col,
             epochs=epochs,
             batch_size=batch_size,
-            **kwargs
+            **fit_kwargs
         )
         
         self.is_fitted = True

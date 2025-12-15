@@ -9,8 +9,11 @@ Version: 1.0
 """
 
 import numpy as np
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, TYPE_CHECKING, Any
 import logging
+
+if TYPE_CHECKING:
+    from tensorflow import keras
 
 try:
     from tensorflow import keras
@@ -34,7 +37,7 @@ def create_lstm_model(
     dense_units: List[int] = [25],
     activation: str = 'relu',
     output_activation: str = 'linear'
-) -> keras.Model:
+):
     """
     Create a vanilla LSTM model.
     
@@ -95,7 +98,7 @@ def create_bidirectional_lstm(
     dense_units: List[int] = [25],
     activation: str = 'relu',
     output_activation: str = 'linear'
-) -> keras.Model:
+) -> Any:
     """
     Create a bidirectional LSTM model.
     
@@ -154,7 +157,7 @@ def create_stacked_lstm(
     dense_units: List[int] = [25],
     activation: str = 'relu',
     output_activation: str = 'linear'
-) -> keras.Model:
+) -> Any:
     """
     Create a stacked (deep) LSTM model.
     

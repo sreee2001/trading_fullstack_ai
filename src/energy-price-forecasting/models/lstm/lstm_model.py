@@ -112,7 +112,7 @@ class LSTMForecaster:
             f"type={model_type}, sequence_length={sequence_length}, forecast_horizon={forecast_horizon}"
         )
     
-    def _create_model(self, n_features: int) -> keras.Model:
+    def _create_model(self, n_features: int):
         """Create the LSTM model architecture."""
         if self.model_type == 'lstm':
             model = create_lstm_model(

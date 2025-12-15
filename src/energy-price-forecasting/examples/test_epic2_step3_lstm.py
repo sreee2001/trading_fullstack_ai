@@ -76,7 +76,7 @@ print("   Training LSTM model (this may take 2-3 minutes)...")
 print("   Using 5 epochs for faster testing...")
 lstm.fit(
     train_data,
-    target_col='price',
+    target_column='price',
     validation_data=val_data,
     epochs=5,  # Reduced for testing
     batch_size=32,
@@ -85,12 +85,14 @@ lstm.fit(
 print("[OK] LSTM model trained")
 
 print("   Generating predictions...")
-predictions = lstm.predict(test_data, target_col='price')
+predictions = lstm.predict(test_data, target_column='price')
 print(f"[OK] Predictions generated: {len(predictions)} values")
 
-# Evaluate
+# Evaluate (align predictions with test data - predictions may be shorter due to sequence length)
 evaluator = ModelEvaluator()
-metrics = evaluator.evaluate(test_data['price'].values, predictions)
+# Align predictions: take last len(predictions) values from test_data
+test_values = test_data['price'].values[-len(predictions):]
+metrics = evaluator.evaluate(test_values, predictions)
 
 print("\n   LSTM Metrics:")
 for metric, value in metrics.items():
@@ -108,17 +110,15 @@ test_features = fe.transform(test_data)
 lstm_features = LSTMWithFeatures(
     sequence_length=60,
     forecast_horizon=1,
-    lstm_config={
-        'lstm_units': [50, 50],
-        'dropout_rate': 0.2,
-        'learning_rate': 0.001
-    }
+    lstm_units=[50, 50],
+    dropout_rate=0.2,
+    learning_rate=0.001
 )
 
 print("   Training LSTM with features (this may take 2-3 minutes)...")
 lstm_features.fit(
     train_features,
-    target_col='price',
+    target_col='price',  # Use target_col for LSTMWithFeatures
     validation_data=val_features,
     epochs=5,  # Reduced for testing
     batch_size=32,
@@ -127,7 +127,9 @@ lstm_features.fit(
 print("[OK] LSTM with features trained")
 
 predictions_features = lstm_features.predict(test_features, target_col='price')
-metrics_features = evaluator.evaluate(test_data['price'].values, predictions_features)
+# Align predictions with test data
+test_values_features = test_features['price'].values[-len(predictions_features):]
+metrics_features = evaluator.evaluate(test_values_features, predictions_features)
 
 print("\n   LSTM with Features Metrics:")
 for metric, value in metrics_features.items():
@@ -143,5 +145,5 @@ print("[OK] STEP 3 COMPLETE: LSTM Neural Network Model")
 print("="*80)
 print("\nPlease review the output above.")
 print("Press Enter to continue to Step 4...")
-input()
+# input()  # Removed for non-interactive execution
 

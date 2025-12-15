@@ -50,7 +50,7 @@ class Commodity(Base):
     __tablename__ = "commodities"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    symbol = Column(String(10), unique=True, nullable=False, index=True)
+    symbol = Column(String(20), unique=True, nullable=False, index=True)
     name = Column(String(100), nullable=False)
     description = Column(Text)
     unit = Column(String(20))

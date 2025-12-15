@@ -86,9 +86,10 @@ def health_check() -> Dict[str, str]:
 
 
 # Include API routes
-from api.routes import forecast, historical
+from api.routes import forecast, historical, models
 app.include_router(forecast.router)
 app.include_router(historical.router)
+app.include_router(models.router)
 
 
 # Log application startup

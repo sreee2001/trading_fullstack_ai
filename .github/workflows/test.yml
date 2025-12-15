@@ -60,7 +60,7 @@ jobs:
           flake8 api/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         continue-on-error: true
 
-      - name: Run tests
+      - name: Run unit tests
         working-directory: src/energy-price-forecasting
         env:
           DB_HOST: localhost
@@ -73,7 +73,24 @@ jobs:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
-          pytest tests/ -v --cov=api --cov=models --cov=database --cov=evaluation --cov=trading --cov-report=term-missing --cov-report=xml
+          pytest tests/ -v --cov=api --cov=models --cov=database --cov=evaluation --cov=trading --cov=analytics --cov=mlops --cov-report=term-missing --cov-report=xml --ignore=tests/integration
+        continue-on-error: true
+
+      - name: Run integration tests
+        working-directory: src/energy-price-forecasting
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: test_db
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          TEST_API_KEY: test_key
+        run: |
+          pytest tests/integration/ -v -m integration
         continue-on-error: true
 
       - name: Upload coverage reports

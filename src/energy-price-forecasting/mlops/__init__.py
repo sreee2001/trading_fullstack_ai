@@ -22,6 +22,11 @@ from .performance_monitoring import (
     DriftDetector,
     PredictionRecord
 )
+from .rollback import (
+    ModelRollback,
+    DeploymentRollback,
+    RollbackManager
+)
 
 __version__ = "1.0.0"
 
@@ -36,5 +41,8 @@ __all__ = [
     'RollingMetricsCalculator',
     'DriftDetector',
     'PredictionRecord',
+    'ModelRollback',
+    'DeploymentRollback',
+    'RollbackManager',
 ]
 

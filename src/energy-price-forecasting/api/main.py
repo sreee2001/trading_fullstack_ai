@@ -182,24 +182,14 @@ def root() -> Dict[str, Any]:
     }
 
 
-@app.get("/health", tags=["Health"])
-def health_check() -> Dict[str, str]:
-    """
-    Health check endpoint for monitoring.
-    
-    Returns:
-        Dictionary with health status
-    """
-    return {"status": "healthy"}
-
-
 # Include API routes
-from api.routes import forecast, historical, models, backtest, admin
+from api.routes import forecast, historical, models, backtest, admin, health
 app.include_router(forecast.router)
 app.include_router(historical.router)
 app.include_router(models.router)
 app.include_router(backtest.router)
 app.include_router(admin.router)
+app.include_router(health.router)
 
 
 # Log application startup

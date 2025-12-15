@@ -4,7 +4,7 @@ API Routes for Energy Price Forecasting API.
 This package contains all API route handlers.
 """
 
-from api.routes import forecast, historical, models, backtest, admin
+from api.routes import forecast, historical, models, backtest, admin, health
 
 __all__ = [
     "forecast",
@@ -12,5 +12,6 @@ __all__ = [
     "models",
     "backtest",
     "admin",
+    "health",
 ]
 

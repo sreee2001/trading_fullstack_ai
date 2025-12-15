@@ -15,6 +15,7 @@ from .volatility_forecasting import VolatilityForecaster, VolatilityMetrics
 from .anomaly_detection import AnomalyDetector
 from .market_regime_detection import MarketRegimeDetector
 from .feature_importance import FeatureImportanceAnalyzer
+from .insight_generation import InsightGenerator
 
 __version__ = "1.0.0"
 
@@ -26,5 +27,6 @@ __all__ = [
     'AnomalyDetector',
     'MarketRegimeDetector',
     'FeatureImportanceAnalyzer',
+    'InsightGenerator',
 ]
 

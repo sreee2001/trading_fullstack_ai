@@ -39,6 +39,7 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
   signals = [],
   showSignals = false,
 }) => {
+  const chartId = `combined-chart-${commodity}-${Date.now()}`;
   // Find the last historical date
   const lastHistoricalDate = historicalData.length > 0
     ? historicalData[historicalData.length - 1].timestamp

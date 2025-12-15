@@ -12,6 +12,7 @@ import ComparisonChart from '../components/charts/ComparisonChart';
 import { forecastService } from '../services/forecastService';
 import { historicalService } from '../services/historicalService';
 import { generateSignals } from '../services/signalService';
+import { exportChartAsPNG, exportDataAsCSV } from '../utils/exportUtils';
 import { useApp } from '../context/AppContext';
 import type { ForecastResponse, HistoricalDataResponse } from '../types/api';
 import type { TradingSignal } from '../types/trading';
@@ -191,13 +192,15 @@ const Forecast: React.FC = () => {
               commodity={forecast.commodity}
             />
           ) : showCombined && historicalData ? (
-            <CombinedChart
-              historicalData={historicalData.data}
-              predictions={forecast.predictions}
-              commodity={forecast.commodity}
-              signals={signals}
-              showSignals={showSignals}
-            />
+            <div id="combined-chart-container">
+              <CombinedChart
+                historicalData={historicalData.data}
+                predictions={forecast.predictions}
+                commodity={forecast.commodity}
+                signals={signals}
+                showSignals={showSignals}
+              />
+            </div>
           ) : (
             <ForecastChart
               predictions={forecast.predictions}

@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { backtestService } from '../services/backtestService';
 import { modelsService } from '../services/modelsService';
+import { exportChartAsPNG, exportDataAsCSV } from '../utils/exportUtils';
 import { useApp } from '../context/AppContext';
 import MetricCard from '../components/MetricCard';
 import EquityCurveChart from '../components/charts/EquityCurveChart';
@@ -230,7 +231,56 @@ const Backtest: React.FC = () => {
 
       {backtestResult && (
         <div className="backtest-results">
-          <h2>Backtest Results</h2>
+          <div className="results-header">
+            <h2>Backtest Results</h2>
+            <div className="export-buttons">
+              <button
+                onClick={async () => {
+                  try {
+                    await exportChartAsPNG(
+                      'equity-curve-container',
+                      `backtest_equity_curve_${backtestResult.model_id}_${backtestResult.start_date}.png`
+                    );
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Failed to export chart');
+                  }
+                }}
+                className="btn-secondary"
+              >
+                Export Equity Curve (PNG)
+              </button>
+              {backtestResult.trades && backtestResult.trades.length > 0 && (
+                <button
+                  onClick={() => {
+                    try {
+                      // Transform trades for CSV export
+                      const csvData = backtestResult.trades.map((trade, index) => ({
+                        trade_number: index + 1,
+                        entry_idx: trade.entry_idx,
+                        exit_idx: trade.exit_idx,
+                        entry_price: trade.entry_price,
+                        exit_price: trade.exit_price,
+                        position: trade.position === 1 ? 'long' : 'short',
+                        pnl_dollars: trade.pnl_dollars || 0,
+                        pnl_fraction: trade.pnl || 0,
+                        capital_after: trade.capital_after || 0,
+                        timestamp: trade.timestamp || '',
+                      }));
+                      exportDataAsCSV(
+                        csvData,
+                        `backtest_trades_${backtestResult.model_id}_${backtestResult.start_date}.csv`
+                      );
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : 'Failed to export CSV');
+                    }
+                  }}
+                  className="btn-secondary"
+                >
+                  Export Trades (CSV)
+                </button>
+              )}
+            </div>
+          </div>
 
           <div className="metrics-grid">
             <MetricCard
@@ -266,7 +316,7 @@ const Backtest: React.FC = () => {
           </div>
 
           {backtestResult.equity_curve && backtestResult.equity_curve.length > 0 && (
-            <div className="equity-section">
+            <div className="equity-section" id="equity-curve-container">
               <EquityCurveChart
                 dates={generateEquityDates(backtestResult.start_date, backtestResult.end_date, backtestResult.equity_curve.length)}
                 values={backtestResult.equity_curve}

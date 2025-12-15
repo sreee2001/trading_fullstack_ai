@@ -31,6 +31,7 @@ const ForecastChart: React.FC<ForecastChartProps> = ({
   commodity,
   height = 400,
 }) => {
+  const chartId = `forecast-chart-${commodity}-${Date.now()}`;
   // Transform data for Recharts
   const chartData = predictions.map((pred) => ({
     date: pred.date,

@@ -32,6 +32,7 @@ const ComparisonChart: React.FC<ComparisonChartProps> = ({
   commodity,
   height = 400,
 }) => {
+  const chartId = `comparison-chart-${commodity}-${Date.now()}`;
   // Create a map of actual prices by date for quick lookup
   const actualPriceMap = new Map<string, number>();
   actualPrices.forEach((point) => {

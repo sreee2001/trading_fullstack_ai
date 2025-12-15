@@ -16,6 +16,12 @@ from .ab_testing import (
     ModelPromoter,
     ABTestResult
 )
+from .performance_monitoring import (
+    PredictionLogger,
+    RollingMetricsCalculator,
+    DriftDetector,
+    PredictionRecord
+)
 
 __version__ = "1.0.0"
 
@@ -26,5 +32,9 @@ __all__ = [
     'ABTestTracker',
     'ModelPromoter',
     'ABTestResult',
+    'PredictionLogger',
+    'RollingMetricsCalculator',
+    'DriftDetector',
+    'PredictionRecord',
 ]
 

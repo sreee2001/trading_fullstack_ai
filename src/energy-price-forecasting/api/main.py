@@ -10,6 +10,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any
 import logging
 
+from api.config import get_settings
+
+# Get application settings
+settings = get_settings()
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -42,8 +47,8 @@ def root() -> Dict[str, Any]:
         Dictionary with API name and version
     """
     return {
-        "message": "Energy Price Forecasting API",
-        "version": "1.0.0",
+        "message": settings.app_name,
+        "version": settings.app_version,
         "status": "operational",
         "docs": "/api/docs",
     }
@@ -69,9 +74,9 @@ if __name__ == "__main__":
     
     uvicorn.run(
         "api.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info",
+        host=settings.host,
+        port=settings.port,
+        reload=settings.debug,
+        log_level=settings.log_level.lower(),
     )
 

@@ -185,7 +185,8 @@ class TestDataValidator:
     
     def test_check_completeness_complete_data(self, validator, valid_price_data):
         """Test completeness check on complete data."""
-        result = validator.check_completeness(valid_price_data)
+        # Pass exclude_weekends=False since test data includes all calendar days
+        result = validator.check_completeness(valid_price_data, exclude_weekends=False)
         
         assert result['completeness_score'] == 100.0
         assert result['gap_count'] == 0
@@ -193,7 +194,8 @@ class TestDataValidator:
     
     def test_check_completeness_with_gaps(self, validator, data_with_gaps):
         """Test completeness check on data with gaps."""
-        result = validator.check_completeness(data_with_gaps)
+        # Pass exclude_weekends=False since test data includes all calendar days
+        result = validator.check_completeness(data_with_gaps, exclude_weekends=False)
         
         assert result['completeness_score'] < 100.0
         assert result['gap_count'] > 0

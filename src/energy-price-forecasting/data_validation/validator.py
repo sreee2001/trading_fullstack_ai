@@ -294,7 +294,8 @@ class DataValidator:
         self,
         df: pd.DataFrame,
         timestamp_col: str = 'timestamp',
-        expected_frequency: str = 'D'
+        expected_frequency: str = 'D',
+        exclude_weekends: bool = True
     ) -> Dict[str, Any]:
         """
         Check data completeness and detect gaps in time series.
@@ -303,6 +304,7 @@ class DataValidator:
             df: DataFrame to check
             timestamp_col: Name of timestamp column
             expected_frequency: Expected frequency ('D' for daily, 'H' for hourly)
+            exclude_weekends: Whether to exclude weekends from expected records (default: True)
         
         Returns:
             Dictionary with completeness analysis:
@@ -359,6 +361,12 @@ class DataValidator:
                 end=df[timestamp_col].max(),
                 freq=expected_frequency
             )
+            
+            # Exclude weekends if requested (for trading days)
+            if exclude_weekends and expected_frequency == 'D':
+                # Filter out Saturdays (5) and Sundays (6)
+                date_range = date_range[date_range.dayofweek < 5]
+            
             expected_records = len(date_range)
             actual_records = len(df)
             missing_records = expected_records - actual_records
@@ -380,7 +388,8 @@ class DataValidator:
             'total_records': actual_records,
             'expected_records': expected_records,
             'missing_records': missing_records,
-            'gap_count': len(gaps)
+            'gap_count': len(gaps),
+            'exclude_weekends': exclude_weekends
         }
         
         logger.info(f"Completeness check: {completeness_score:.2f}% complete, {len(gaps)} gaps found")

@@ -186,11 +186,13 @@ const Forecast: React.FC = () => {
           </div>
 
           {showComparison && actualData ? (
-            <ComparisonChart
-              predictions={forecast.predictions}
-              actualPrices={actualData.data}
-              commodity={forecast.commodity}
-            />
+            <div id="comparison-chart-container">
+              <ComparisonChart
+                predictions={forecast.predictions}
+                actualPrices={actualData.data}
+                commodity={forecast.commodity}
+              />
+            </div>
           ) : showCombined && historicalData ? (
             <div id="combined-chart-container">
               <CombinedChart
@@ -202,10 +204,12 @@ const Forecast: React.FC = () => {
               />
             </div>
           ) : (
-            <ForecastChart
-              predictions={forecast.predictions}
-              commodity={forecast.commodity}
-            />
+            <div id="forecast-chart-container">
+              <ForecastChart
+                predictions={forecast.predictions}
+                commodity={forecast.commodity}
+              />
+            </div>
           )}
 
           {historicalData && !showCombined && !showComparison && (

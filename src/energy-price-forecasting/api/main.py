@@ -85,6 +85,11 @@ def health_check() -> Dict[str, str]:
     return {"status": "healthy"}
 
 
+# Include API routes
+from api.routes import forecast
+app.include_router(forecast.router)
+
+
 # Log application startup
 logger.info("FastAPI application initialized")
 

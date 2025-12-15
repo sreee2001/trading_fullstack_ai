@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from api.models.models import ModelsListResponse, ModelInfo, ModelMetrics
 from api.services.model_info_service import get_model_info_service
 from api.logging_config import get_logger
+from api.cache.response_cache import get_response_cache
 
 logger = get_logger(__name__)
 
@@ -40,6 +41,15 @@ async def get_models(
     logger.info(f"Models list request (commodity_filter: {commodity})")
     
     try:
+        # Check cache (10 min TTL)
+        cache = get_response_cache(default_ttl=600)
+        cache_key_params = {"commodity": commodity} if commodity else {}
+        
+        cached_response = cache.get("/api/v1/models", query_params=cache_key_params)
+        if cached_response:
+            logger.info("Returning cached model info")
+            return ModelsListResponse(**cached_response)
+        
         # Get service
         service = get_model_info_service()
         
@@ -76,6 +86,14 @@ async def get_models(
             models=models,
             total_count=len(models),
             commodity_filter=commodity
+        )
+        
+        # Cache the response
+        cache.set(
+            "/api/v1/models",
+            response.model_dump(),
+            ttl=600,  # 10 minutes
+            query_params=cache_key_params
         )
         
         logger.info(f"Retrieved {len(models)} models")

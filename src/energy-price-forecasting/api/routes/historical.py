@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from api.models.historical import HistoricalDataRequest, HistoricalDataResponse, PricePoint
 from api.services.historical_data_service import get_historical_data_service
 from api.logging_config import get_logger
+from api.cache.response_cache import get_response_cache
 
 logger = get_logger(__name__)
 
@@ -51,6 +52,22 @@ async def get_historical_data(
     )
     
     try:
+        # Check cache (5 min TTL)
+        cache = get_response_cache(default_ttl=300)
+        cache_key_params = {
+            "commodity": commodity,
+            "start_date": start_date,
+            "end_date": end_date,
+            "limit": limit,
+            "offset": offset,
+            "source": source
+        }
+        
+        cached_response = cache.get("/api/v1/historical", query_params=cache_key_params)
+        if cached_response:
+            logger.info("Returning cached historical data")
+            return HistoricalDataResponse(**cached_response)
+        
         # Validate request using Pydantic model
         request = HistoricalDataRequest(
             commodity=commodity,
@@ -92,6 +109,14 @@ async def get_historical_data(
             limit=request.limit,
             offset=request.offset,
             has_more=has_more
+        )
+        
+        # Cache the response
+        cache.set(
+            "/api/v1/historical",
+            response.model_dump(),
+            ttl=300,  # 5 minutes
+            query_params=cache_key_params
         )
         
         logger.info(

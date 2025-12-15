@@ -32,6 +32,7 @@ optuna>=3.5.0  # For hyperparameter tuning
 
 # Time series analysis
 pmdarima>=2.0.4  # Auto ARIMA
+prophet>=1.1.5  # Facebook Prophet
 
 # Caching and rate limiting
 redis==5.0.1

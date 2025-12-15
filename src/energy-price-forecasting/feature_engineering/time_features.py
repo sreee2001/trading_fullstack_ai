@@ -15,7 +15,13 @@ import pandas as pd
 import numpy as np
 from typing import List, Dict, Optional
 import logging
-from statsmodels.tsa.seasonal import seasonal_decompose
+
+try:
+    from statsmodels.tsa.seasonal import seasonal_decompose
+    SEASONAL_DECOMPOSE_AVAILABLE = True
+except ImportError:
+    seasonal_decompose = None
+    SEASONAL_DECOMPOSE_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -177,11 +183,25 @@ def seasonal_decompose_features(
     
     df_result = df.copy()
     
+    # If statsmodels is not available, log and fill with NaNs
+    if not SEASONAL_DECOMPOSE_AVAILABLE:
+        logger.warning(
+            "statsmodels is not installed; skipping seasonal decomposition and "
+            "filling trend/seasonal/residual with NaN. "
+            "Install 'statsmodels' for full functionality."
+        )
+        df_result[f'{column}_trend'] = np.nan
+        df_result[f'{column}_seasonal'] = np.nan
+        df_result[f'{column}_residual'] = np.nan
+        return df_result
+    
     # Check if we have enough data points
     min_points = period * 2 if period else 20
     if len(df_result) < min_points:
-        logger.warning(f"Not enough data points for seasonal decomposition (need at least {min_points}). "
-                      f"Filling with NaN values.")
+        logger.warning(
+            f"Not enough data points for seasonal decomposition (need at least {min_points}). "
+            f"Filling with NaN values."
+        )
         df_result[f'{column}_trend'] = np.nan
         df_result[f'{column}_seasonal'] = np.nan
         df_result[f'{column}_residual'] = np.nan
@@ -201,7 +221,10 @@ def seasonal_decompose_features(
         df_result[f'{column}_seasonal'] = decomposition.seasonal
         df_result[f'{column}_residual'] = decomposition.resid
         
-        logger.info(f"Performed seasonal decomposition for '{column}' with model='{model}', period={period}")
+        logger.info(
+            f"Performed seasonal decomposition for '{column}' "
+            f"with model='{model}', period={period}"
+        )
         
     except Exception as e:
         logger.error(f"Seasonal decomposition failed: {e}. Filling with NaN values.")

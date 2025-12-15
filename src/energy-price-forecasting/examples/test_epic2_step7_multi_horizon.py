@@ -59,6 +59,10 @@ print("[OK] Models trained for all horizons")
 print("\n   Generating multi-horizon predictions...")
 predictions = forecaster.predict(test_data, target_col='price')
 
+# Ensure predictions are 1D arrays per horizon
+for horizon in list(predictions.keys()):
+    predictions[horizon] = np.asarray(predictions[horizon]).reshape(-1)
+
 print(f"[OK] Predictions generated:")
 for horizon, pred in predictions.items():
     print(f"   {horizon}-day horizon: {len(pred)} predictions")
@@ -103,7 +107,7 @@ print("[OK] STEP 7 COMPLETE: Multi-Horizon Forecasting")
 print("="*80)
 print("\nPlease review the output above.")
 print("\n" + "="*80)
-print("🎉 EPIC 2 MANUAL TESTING COMPLETE!")
+print("EPIC 2 MANUAL TESTING COMPLETE!")
 print("="*80)
 print("\nAll 7 features have been tested:")
 print("  [OK] Feature 2.1: Feature Engineering Pipeline")
@@ -113,6 +117,4 @@ print("  [OK] Feature 2.4: Model Training Infrastructure")
 print("  [OK] Feature 2.5: Hyperparameter Tuning Framework")
 print("  [OK] Feature 2.6: Model Versioning & Experiment Tracking")
 print("  [OK] Feature 2.7: Multi-Horizon Forecasting")
-print("\nPress Enter to exit...")
-input()
 

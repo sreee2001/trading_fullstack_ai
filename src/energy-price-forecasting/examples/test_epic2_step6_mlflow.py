@@ -44,9 +44,9 @@ mlflow_manager = MLflowManager(
     experiment_name='epic2_manual_testing'
 )
 
-# Create experiment
-experiment_id = mlflow_manager.create_experiment()
-print(f"[OK] Experiment created: {experiment_id}")
+# Ensure experiment exists / is selected
+experiment_id = mlflow_manager.setup_experiment('epic2_manual_testing')
+print(f"[OK] Experiment ready: {experiment_id}")
 
 # Start a run
 run = mlflow_manager.start_run()
@@ -130,17 +130,18 @@ runs = tracker.search_runs(filter_string="tags.test = 'epic2_manual'")
 print(f"[OK] Found {len(runs)} runs with tag 'epic2_manual'")
 
 if runs:
-    print(f"   Latest run: {runs[0].info.run_id}")
-    print(f"   Run name: {runs[0].data.tags.get('mlflow.runName', 'N/A')}")
+    latest_run = runs[0]
+    print(f"   Latest run: {latest_run.get('run_id')}")
+    print(f"   Run name: {latest_run.get('tags.mlflow.runName', 'N/A')}")
 
 # Test Model Registry
 print("\n[4/4] Testing Model Registry...")
 
 registry = ModelRegistryManager(tracking_uri='file:./mlruns')
 
-# Register a model (using the run we just created)
+# Register a model (using the run we just found, if any)
 if runs:
-    model_uri = f"runs:/{runs[0].info.run_id}/model"
+    model_uri = f"runs:/{latest_run.get('run_id')}/model"
     try:
         model_name = "epic2_test_model"
         version = registry.register_model(
@@ -153,9 +154,8 @@ if runs:
         # Get model versions
         versions = registry.get_model_versions(model_name)
         print(f"[OK] Model versions retrieved: {len(versions)} versions")
-        
     except Exception as e:
-        print(f"⚠️  Model registration skipped: {e}")
+        print(f"[WARN] Model registration skipped: {e}")
         print("   (This is expected if no model artifact was saved)")
 
 print("\n" + "="*80)
@@ -164,6 +164,5 @@ print("="*80)
 print("\nMLflow UI can be viewed with: mlflow ui")
 print("Then open: http://localhost:5000")
 print("\nPlease review the output above.")
-print("Press Enter to continue to Step 7...")
-input()
+print("Proceed to Step 7 to test multi-horizon forecasting.")
 

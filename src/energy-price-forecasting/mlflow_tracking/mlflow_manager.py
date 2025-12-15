@@ -74,6 +74,9 @@ class MLflowManager:
         if experiment_name:
             self.setup_experiment(experiment_name)
         
+        self.active_run = None
+        self.run_id = None
+        
         logger.info(f"MLflowManager initialized with tracking URI: {self.tracking_uri}")
     
     def setup_experiment(self, experiment_name: str) -> str:
@@ -100,6 +103,64 @@ class MLflowManager:
         except Exception as e:
             logger.error(f"Failed to setup experiment: {e}")
             raise
+    
+    def create_experiment(self, experiment_name: str) -> str:
+        """
+        Backwards-compatible helper to create or get an experiment.
+
+        Some example scripts call create_experiment(); this simply delegates
+        to setup_experiment() which already handles create-or-get logic.
+        """
+        return self.setup_experiment(experiment_name)
+
+    # ------------------------------------------------------------------
+    # Run-level helpers (simple convenience wrappers around mlflow API)
+    # ------------------------------------------------------------------
+    def start_run(self, run_name: Optional[str] = None):
+        """
+        Start a new MLflow run using the current tracking URI/experiment.
+        """
+        if self.active_run is not None:
+            logger.warning("Run already active. Ending previous run before starting a new one.")
+            self.end_run()
+        
+        self.active_run = mlflow.start_run(run_name=run_name)
+        self.run_id = self.active_run.info.run_id
+        logger.info(f"Started run: {self.run_id}")
+        return self.active_run
+    
+    def end_run(self, status: str = 'FINISHED'):
+        """
+        End the current MLflow run.
+        """
+        if self.active_run is not None:
+            mlflow.end_run(status=status)
+            logger.info(f"Ended run: {self.run_id} (Status: {status})")
+            self.active_run = None
+            self.run_id = None
+        else:
+            logger.warning("No active run to end.")
+    
+    def log_params(self, params: Dict[str, Any]):
+        """
+        Log parameters to the active run.
+        """
+        if self.active_run is None:
+            raise RuntimeError("No active run. Call start_run() first.")
+        
+        params_str = {k: str(v) for k, v in params.items()}
+        mlflow.log_params(params_str)
+        logger.debug(f"Logged parameters: {list(params.keys())}")
+    
+    def log_metrics(self, metrics: Dict[str, float]):
+        """
+        Log metrics to the active run.
+        """
+        if self.active_run is None:
+            raise RuntimeError("No active run. Call start_run() first.")
+        
+        mlflow.log_metrics(metrics)
+        logger.debug(f"Logged metrics: {list(metrics.keys())}")
     
     def get_experiment(self, experiment_name: Optional[str] = None) -> Dict[str, Any]:
         """

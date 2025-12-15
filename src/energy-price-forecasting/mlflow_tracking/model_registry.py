@@ -295,3 +295,14 @@ class ModelRegistry:
             logger.error(f"Failed to get model lineage: {e}")
             return {}
 
+
+class ModelRegistryManager(ModelRegistry):
+    """
+    Backwards-compatible alias for ModelRegistry.
+
+    Some example scripts and documentation refer to ModelRegistryManager.
+    This subclass provides the same API as ModelRegistry so those imports
+    continue to work without changes.
+    """
+    pass
+

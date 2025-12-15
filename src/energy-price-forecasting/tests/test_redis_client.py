@@ -46,7 +46,8 @@ class TestRedisClient:
                 
                 client = RedisClient(host="localhost", port=6379, db=0)
                 
-                assert client.client is not None
+                # When connection fails, client is set to None
+                assert client.client is None
                 assert client.is_available is False
     
     def test_redis_ping(self):
@@ -59,10 +60,13 @@ class TestRedisClient:
                 mock_redis_module.Redis.return_value = mock_client
                 
                 client = RedisClient(host="localhost", port=6379, db=0)
+                # Ping is called during initialization, so call count will be > 1
+                initial_call_count = mock_client.ping.call_count
                 result = client.ping()
                 
                 assert result is True
-                mock_client.ping.assert_called_once()
+                # Verify ping was called at least once more (during initialization + our call)
+                assert mock_client.ping.call_count > initial_call_count
     
     def test_redis_ping_failure(self):
         """Test Redis ping handles failures."""

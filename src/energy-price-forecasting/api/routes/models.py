@@ -18,7 +18,34 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["Models"])
 
 
-@router.get("/models", response_model=ModelsListResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    "/models",
+    response_model=ModelsListResponse,
+    status_code=status.HTTP_200_OK,
+    summary="List Available ML Models",
+    description="""
+    Retrieve metadata for all available ML models from the model registry.
+    
+    **Features:**
+    - Lists all registered models
+    - Optional commodity filtering
+    - Includes performance metrics
+    - Model version and stage information
+    - Cached for 10 minutes
+    
+    **Query Parameters:**
+    - `commodity`: Optional commodity filter (WTI, BRENT, NG)
+    
+    **Example:**
+    ```
+    GET /api/v1/models?commodity=WTI
+    ```
+    """,
+    responses={
+        200: {"description": "Model list retrieved successfully"},
+        500: {"description": "Internal server error"}
+    }
+)
 async def get_models(
     commodity: Optional[str] = Query(
         default=None,

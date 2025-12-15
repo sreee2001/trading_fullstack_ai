@@ -19,7 +19,40 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["Historical Data"])
 
 
-@router.get("/historical", response_model=HistoricalDataResponse, status_code=status.HTTP_200_OK)
+@router.get(
+    "/historical",
+    response_model=HistoricalDataResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Retrieve Historical Price Data",
+    description="""
+    Retrieve historical energy commodity price data with pagination and filtering.
+    
+    **Features:**
+    - Supports WTI, BRENT, and Natural Gas commodities
+    - Date range filtering
+    - Pagination (limit/offset)
+    - Optional data source filtering
+    - Cached for 5 minutes
+    
+    **Query Parameters:**
+    - `commodity`: Commodity symbol (WTI, BRENT, NG)
+    - `start_date`: Start date (YYYY-MM-DD)
+    - `end_date`: End date (YYYY-MM-DD)
+    - `limit`: Maximum records to return (1-10000, default: 1000)
+    - `offset`: Records to skip for pagination (default: 0)
+    - `source`: Optional data source name (EIA, FRED, YAHOO)
+    
+    **Example:**
+    ```
+    GET /api/v1/historical?commodity=WTI&start_date=2024-01-01&end_date=2024-12-31&limit=100
+    ```
+    """,
+    responses={
+        200: {"description": "Historical data retrieved successfully"},
+        422: {"description": "Validation error"},
+        500: {"description": "Internal server error"}
+    }
+)
 async def get_historical_data(
     commodity: str = Query(..., description="Commodity symbol (WTI, BRENT, NG)"),
     start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),

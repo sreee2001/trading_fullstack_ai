@@ -15,19 +15,70 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["Backtesting"])
 
 
-@router.post("/backtest", response_model=BacktestResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/backtest",
+    response_model=BacktestResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Run Backtest on Forecasting Model",
+    description="""
+    Run a backtest simulation on a forecasting model with custom trading strategies.
+    
+    **Features:**
+    - Simulates trading based on model predictions
+    - Customizable trading strategies (threshold, momentum, mean reversion, etc.)
+    - Configurable commission and slippage
+    - Returns performance metrics and trade history
+    - Equity curve visualization data
+    
+    **Request Parameters:**
+    - `model_id`: Model identifier (e.g., "WTI_LSTM_v1_Production")
+    - `start_date`: Backtest start date (YYYY-MM-DD)
+    - `end_date`: Backtest end date (YYYY-MM-DD)
+    - `initial_capital`: Starting capital (default: 100000)
+    - `commission`: Commission per trade (default: 0.001 = 0.1%)
+    - `slippage`: Slippage per trade (default: 0.0005 = 0.05%)
+    - `strategy_params`: Trading strategy parameters
+    
+    **Example Request:**
+    ```json
+    {
+        "model_id": "WTI_LSTM_v1_Production",
+        "start_date": "2024-01-01",
+        "end_date": "2024-03-31",
+        "initial_capital": 100000,
+        "strategy_params": {
+            "strategy_name": "threshold",
+            "threshold": 0.02
+        }
+    }
+    ```
+    
+    **Response includes:**
+    - Performance metrics (Sharpe ratio, Sortino ratio, max drawdown, etc.)
+    - Trade history with entry/exit prices and P&L
+    - Equity curve data
+    """,
+    responses={
+        200: {"description": "Backtest completed successfully"},
+        400: {"description": "Invalid request parameters"},
+        500: {"description": "Internal server error"}
+    }
+)
 async def run_backtest(request: BacktestRequest) -> BacktestResponse:
     """
-    Run a backtest for a model.
+    Run a backtest simulation on a forecasting model.
     
-    Args:
-        request: Backtest request with model_id, date range, and parameters
-        
-    Returns:
-        BacktestResponse with backtest results
-        
-    Raises:
-        HTTPException: If validation fails or backtest fails
+    **Parameters:**
+    - **model_id**: Model identifier (format: COMMODITY_MODELTYPE_VERSION_STAGE)
+    - **start_date**: Backtest start date (YYYY-MM-DD)
+    - **end_date**: Backtest end date (YYYY-MM-DD)
+    - **initial_capital**: Starting capital for simulation (default: 100000)
+    - **commission**: Commission per trade as fraction (default: 0.001)
+    - **slippage**: Slippage per trade as fraction (default: 0.0005)
+    - **strategy_params**: Trading strategy configuration
+    
+    **Returns:**
+    - BacktestResponse with metrics, trades, and equity curve
     """
     logger.info(
         f"Backtest request received: model_id={request.model_id}, "

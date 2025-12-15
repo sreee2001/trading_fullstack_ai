@@ -20,19 +20,80 @@ logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["Forecast"])
 
 
-@router.post("/forecast", response_model=ForecastResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/forecast",
+    response_model=ForecastResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Generate Energy Commodity Price Forecast",
+    description="""
+    Generate price forecasts for energy commodities (WTI, BRENT, Natural Gas).
+    
+    **Features:**
+    - Supports multiple commodities: WTI, BRENT, NG
+    - Forecast horizon: 1-30 days
+    - Returns predictions with confidence intervals
+    - Uses trained ML models (LSTM, ARIMA, Prophet)
+    
+    **Example Request:**
+    ```json
+    {
+        "commodity": "WTI",
+        "horizon": 7,
+        "start_date": "2025-01-01"
+    }
+    ```
+    
+    **Response includes:**
+    - List of predictions with dates and prices
+    - Confidence intervals (lower/upper bounds)
+    - Model information
+    """,
+    responses={
+        200: {
+            "description": "Forecast generated successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "commodity": "WTI",
+                        "forecast_date": "2025-01-01",
+                        "horizon": 7,
+                        "predictions": [
+                            {
+                                "date": "2025-01-01",
+                                "price": 75.50,
+                                "confidence_lower": 71.73,
+                                "confidence_upper": 79.28
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        404: {"description": "Model not found for commodity"},
+        503: {"description": "Model not fitted"},
+        500: {"description": "Internal server error"}
+    }
+)
 async def forecast(request: ForecastRequest) -> ForecastResponse:
     """
-    Generate price forecast for a commodity.
+    Generate price forecast for an energy commodity.
     
-    Args:
-        request: Forecast request with commodity, horizon, and start_date
-        
-    Returns:
-        ForecastResponse with predictions
-        
-    Raises:
-        HTTPException: If model not found or forecast generation fails
+    **Parameters:**
+    - **commodity**: Commodity symbol (WTI, BRENT, or NG)
+    - **horizon**: Number of days to forecast (1-30)
+    - **start_date**: Start date for the forecast (YYYY-MM-DD)
+    
+    **Returns:**
+    - ForecastResponse with predictions and confidence intervals
+    
+    **Example:**
+    ```python
+    {
+        "commodity": "WTI",
+        "horizon": 7,
+        "start_date": "2025-01-01"
+    }
+    ```
     """
     logger.info(
         f"Forecast request received: commodity={request.commodity}, "

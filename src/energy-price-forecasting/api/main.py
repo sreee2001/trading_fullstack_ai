@@ -7,11 +7,13 @@ middleware, routes, and event handlers.
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
 from typing import Dict, Any
 import logging
 
 from api.config import get_settings
 from api.logging_config import setup_api_logging, get_logger
+from api.auth.middleware import API_KEY_HEADER_NAME
 
 # Get application settings
 settings = get_settings()
@@ -22,15 +24,113 @@ setup_api_logging()
 # Get logger for this module
 logger = get_logger(__name__)
 
-# Initialize FastAPI application
+# Initialize FastAPI application with comprehensive OpenAPI metadata
 app = FastAPI(
     title="Energy Price Forecasting API",
-    description="REST API for energy price forecasting, historical data, and model management",
+    description="""
+    REST API for energy commodity price forecasting, historical data retrieval, and ML model management.
+    
+    ## Features
+    
+    * **Forecasting**: Generate price forecasts for WTI, BRENT, and Natural Gas commodities
+    * **Historical Data**: Retrieve historical price data with pagination and filtering
+    * **Model Management**: Query ML model metadata and performance metrics
+    * **Backtesting**: Run backtests on forecasting models with custom trading strategies
+    * **API Key Authentication**: Secure access with API key-based authentication
+    * **Rate Limiting**: 100 requests per minute per API key
+    
+    ## Authentication
+    
+    Most endpoints require an API key. Include it in the `X-API-Key` header:
+    
+    ```
+    X-API-Key: epf_your_api_key_here
+    ```
+    
+    To obtain an API key, contact the administrator or use the admin endpoints.
+    """,
     version="1.0.0",
+    contact={
+        "name": "Energy Trading AI Team",
+        "email": "support@energy-trading-ai.com",
+        "url": "https://github.com/energy-trading-ai"
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT"
+    },
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     openapi_url="/api/openapi.json",
+    openapi_tags=[
+        {
+            "name": "Root",
+            "description": "Root endpoint and API information"
+        },
+        {
+            "name": "Health",
+            "description": "Health check and monitoring endpoints"
+        },
+        {
+            "name": "Forecast",
+            "description": "Generate energy commodity price forecasts"
+        },
+        {
+            "name": "Historical Data",
+            "description": "Retrieve historical price data"
+        },
+        {
+            "name": "Models",
+            "description": "Query ML model metadata and performance metrics"
+        },
+        {
+            "name": "Backtest",
+            "description": "Run backtests on forecasting models"
+        },
+        {
+            "name": "Admin",
+            "description": "Administrative endpoints for API key management"
+        }
+    ]
 )
+
+# Configure API Key security scheme for OpenAPI/Swagger UI
+api_key_header = APIKeyHeader(name=API_KEY_HEADER_NAME, auto_error=False)
+
+# Add security scheme to OpenAPI
+app.openapi_schema = None  # Force regeneration
+
+def custom_openapi():
+    """Custom OpenAPI schema with security scheme."""
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    from fastapi.openapi.utils import get_openapi
+    
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    
+    # Add security scheme
+    openapi_schema["components"]["securitySchemes"] = {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": API_KEY_HEADER_NAME,
+            "description": "API Key authentication. Get your API key from the admin endpoints."
+        }
+    }
+    
+    # Add security requirement to protected endpoints
+    # (Endpoints using APIKeyAuth dependency will automatically require it)
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 # Configure CORS middleware
 app.add_middleware(

@@ -15,6 +15,21 @@ import type { BacktestRequest, BacktestResponse } from '../types/api';
 import type { ModelInfo } from '../types/api';
 import './Backtest.css';
 
+// Helper function to generate dates for equity curve
+const generateEquityDates = (startDate: string, endDate: string, count: number): string[] => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const dates: string[] = [];
+  const step = (end.getTime() - start.getTime()) / (count - 1);
+  
+  for (let i = 0; i < count; i++) {
+    const date = new Date(start.getTime() + step * i);
+    dates.push(date.toISOString().split('T')[0]);
+  }
+  
+  return dates;
+};
+
 const Backtest: React.FC = () => {
   const { state } = useApp();
   const [models, setModels] = useState<ModelInfo[]>([]);
@@ -221,7 +236,7 @@ const Backtest: React.FC = () => {
             <MetricCard
               title="Total Return"
               value={`${((backtestResult.metrics.total_return || 0) * 100).toFixed(2)}%`}
-              color={backtestResult.metrics.total_return && backtestResult.metrics.total_return >= 0 ? 'green' : 'red'}
+              color={backtestResult.metrics.total_return !== undefined && backtestResult.metrics.total_return >= 0 ? 'green' : 'red'}
             />
             <MetricCard
               title="Sharpe Ratio"
@@ -250,20 +265,24 @@ const Backtest: React.FC = () => {
             />
           </div>
 
-          {backtestResult.equity_curve && (
+          {backtestResult.equity_curve && backtestResult.equity_curve.length > 0 && (
             <div className="equity-section">
               <EquityCurveChart
-                dates={backtestResult.equity_curve.dates}
-                values={backtestResult.equity_curve.values}
-                initialCapital={backtestResult.initial_capital}
-                finalCapital={backtestResult.final_capital}
+                dates={generateEquityDates(backtestResult.start_date, backtestResult.end_date, backtestResult.equity_curve.length)}
+                values={backtestResult.equity_curve}
+                initialCapital={backtestResult.metrics.initial_capital || 100000}
+                finalCapital={backtestResult.metrics.final_capital || 100000}
               />
             </div>
           )}
 
           {backtestResult.trades && backtestResult.trades.length > 0 && (
             <div className="trades-section">
-              <TradeHistoryTable trades={backtestResult.trades} />
+              <TradeHistoryTable 
+                trades={backtestResult.trades}
+                startDate={backtestResult.start_date}
+                endDate={backtestResult.end_date}
+              />
             </div>
           )}
         </div>

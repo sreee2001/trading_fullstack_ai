@@ -117,16 +117,21 @@ export interface BacktestMetrics {
   mape?: number;
   r_squared?: number;
   directional_accuracy?: number;
+  initial_capital?: number;
+  final_capital?: number;
+  cumulative_pnl?: number;
 }
 
 export interface Trade {
-  entry_date: string;
-  exit_date: string;
+  entry_idx: number;
+  exit_idx: number;
   entry_price: number;
   exit_price: number;
-  position: 'long' | 'short';
-  pnl: number;
-  capital_after_trade: number;
+  position: number; // 1 = long, -1 = short
+  pnl?: number; // Fraction
+  pnl_dollars?: number; // Dollars
+  capital_after?: number;
+  timestamp?: string;
 }
 
 export interface BacktestResponse {
@@ -136,11 +141,8 @@ export interface BacktestResponse {
   metrics: BacktestMetrics;
   num_trades: number;
   trades: Trade[];
-  equity_curve?: {
-    dates: string[];
-    values: number[];
-  };
-  initial_capital: number;
-  final_capital: number;
+  equity_curve?: number[]; // Array of equity values
+  initial_capital?: number;
+  final_capital?: number;
 }
 

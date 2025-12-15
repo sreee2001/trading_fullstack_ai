@@ -9,19 +9,58 @@ import type { Trade } from '../types/api';
 import { format } from 'date-fns';
 import './TradeHistoryTable.css';
 
+// Transform backend Trade to frontend format
+interface DisplayTrade {
+  entry_date: string;
+  exit_date: string;
+  entry_price: number;
+  exit_price: number;
+  position: 'long' | 'short';
+  pnl: number;
+  capital_after_trade: number;
+}
+
 interface TradeHistoryTableProps {
   trades: Trade[];
+  startDate?: string;
+  endDate?: string;
 }
 
 type SortField = 'entry_date' | 'exit_date' | 'pnl' | 'position';
 type SortDirection = 'asc' | 'desc';
 
-const TradeHistoryTable: React.FC<TradeHistoryTableProps> = ({ trades }) => {
+const TradeHistoryTable: React.FC<TradeHistoryTableProps> = ({ trades, startDate, endDate }) => {
   const [sortField, setSortField] = useState<SortField>('entry_date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
+  // Transform backend trades to display format
+  const displayTrades = useMemo<DisplayTrade[]>(() => {
+    if (!trades.length || !startDate || !endDate) return [];
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const step = totalDays / (totalDays + 1);
+    
+    return trades.map((trade) => {
+      // Estimate dates from indices
+      const entryDate = new Date(start.getTime() + step * trade.entry_idx * (1000 * 60 * 60 * 24));
+      const exitDate = new Date(start.getTime() + step * trade.exit_idx * (1000 * 60 * 60 * 24));
+      
+      return {
+        entry_date: entryDate.toISOString().split('T')[0],
+        exit_date: exitDate.toISOString().split('T')[0],
+        entry_price: trade.entry_price,
+        exit_price: trade.exit_price,
+        position: trade.position === 1 ? 'long' : 'short',
+        pnl: trade.pnl_dollars || (trade.pnl || 0) * (trade.capital_after || 100000),
+        capital_after_trade: trade.capital_after || 100000,
+      };
+    });
+  }, [trades, startDate, endDate]);
+
   const sortedTrades = useMemo(() => {
-    const sorted = [...trades].sort((a, b) => {
+    const sorted = [...displayTrades].sort((a, b) => {
       let aValue: number | string = 0;
       let bValue: number | string = 0;
 
@@ -53,7 +92,7 @@ const TradeHistoryTable: React.FC<TradeHistoryTableProps> = ({ trades }) => {
     });
 
     return sorted;
-  }, [trades, sortField, sortDirection]);
+  }, [displayTrades, sortField, sortDirection]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -69,9 +108,9 @@ const TradeHistoryTable: React.FC<TradeHistoryTableProps> = ({ trades }) => {
     return sortDirection === 'asc' ? '↑' : '↓';
   };
 
-  const totalPnL = trades.reduce((sum, trade) => sum + trade.pnl, 0);
-  const winningTrades = trades.filter((t) => t.pnl > 0).length;
-  const losingTrades = trades.filter((t) => t.pnl < 0).length;
+  const totalPnL = displayTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+  const winningTrades = displayTrades.filter((t) => t.pnl > 0).length;
+  const losingTrades = displayTrades.filter((t) => t.pnl < 0).length;
 
   return (
     <div className="trade-history-table">
@@ -79,7 +118,7 @@ const TradeHistoryTable: React.FC<TradeHistoryTableProps> = ({ trades }) => {
         <h3>Trade History</h3>
         <div className="trade-stats">
           <span className="stat-item">
-            Total Trades: <strong>{trades.length}</strong>
+            Total Trades: <strong>{displayTrades.length}</strong>
           </span>
           <span className="stat-item">
             Winning: <strong className="positive">{winningTrades}</strong>

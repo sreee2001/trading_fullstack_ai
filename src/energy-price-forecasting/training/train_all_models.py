@@ -80,13 +80,12 @@ def train_all_models(
     logger.info(f"Experiment: {experiment_name}")
     
     # Initialize MLflow tracker
-    tracker = ExperimentTracker()
-    tracker.set_experiment(experiment_name)
+    tracker = ExperimentTracker(experiment_name=experiment_name)
     
     # Initialize model registry
     registry = ModelRegistry()
     
-    # Initialize model service
+    # Initialize model service (for checking existing models)
     model_service = get_model_service()
     
     results = {

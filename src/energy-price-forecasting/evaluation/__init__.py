@@ -11,6 +11,7 @@ Version: 1.0
 from .walk_forward import WalkForwardValidator
 from .performance_metrics import PerformanceMetrics
 from .backtesting import BacktestingEngine
+from .statistical_metrics import StatisticalMetrics
 
 __version__ = "1.0.0"
 
@@ -18,5 +19,6 @@ __all__ = [
     'WalkForwardValidator',
     'PerformanceMetrics',
     'BacktestingEngine',
+    'StatisticalMetrics',
 ]
 

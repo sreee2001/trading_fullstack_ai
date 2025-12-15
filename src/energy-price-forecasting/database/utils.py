@@ -341,4 +341,29 @@ def get_session() -> Generator[Session, None, None]:
         yield session
 
 
+def check_database_health() -> tuple[bool, str]:
+    """
+    Check database health and connectivity.
+    
+    Returns:
+        tuple: (is_healthy: bool, message: str)
+    """
+    try:
+        db = get_database_manager()
+        
+        # Check connection
+        if not db.check_connection():
+            return False, "Database connection failed"
+        
+        # Check TimescaleDB extension
+        if not db.check_timescale_extension():
+            return True, "Connected (TimescaleDB not found)"
+        
+        return True, "Database healthy (TimescaleDB available)"
+    
+    except Exception as e:
+        return False, f"Health check error: {str(e)}"
+
+
+
 

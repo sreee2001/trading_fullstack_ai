@@ -303,15 +303,22 @@ trading_fullstack_ai/
 │
 ├── docs/
 │   └── energy-price-forecasting/          # Comprehensive documentation
+│       ├── epics/                         # Epic documentation
+│       │   ├── epic-1/                    # Epic 1 comprehensive docs
+│       │   └── epic-2/                    # Epic 2 comprehensive docs
+│       ├── status/                        # Status reports
+│       │   ├── epic-completion/          # Epic completion reports
+│       │   ├── feature-completion/        # Feature completion reports
+│       │   └── test-results/              # Test execution results
+│       ├── test-cases/                    # Manual test cases
+│       ├── rules/                         # Rules & architecture
+│       ├── instructions/                  # How-to guides
+│       │   ├── setup/                     # Setup guides
+│       │   └── testing/                   # Testing guides
 │       ├── project-plan/                  # Epics, features, user stories
-│       ├── session-reports/               # Implementation session logs
 │       ├── user-stories/                  # Detailed user stories
-│       ├── EPIC-1-STATUS-REPORT.md        # Epic 1 completion report
-│       ├── EPIC-1-COMPREHENSIVE-ANALYSIS.md # Full analysis (950+ lines)
-│       ├── DATA-PIPELINE-WORKFLOW.md      # Pipeline architecture
-│       ├── DATA-VALIDATION-RULES.md       # Validation framework
-│       ├── TESTING-GUIDE.md               # How to test
-│       └── ... (35+ documentation files)
+│       ├── session-reports/               # Implementation session logs
+│       └── TABLE-OF-CONTENTS.md          # Documentation index
 │
 └── README.md                              # This file
 ```

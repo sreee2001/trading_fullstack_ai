@@ -1,0 +1,43 @@
+# Training Configuration
+# Energy Price Forecasting System
+# Version: 1.0
+
+# Data Splitting Configuration
+data_splitting:
+  train_ratio: 0.7      # 70% for training
+  val_ratio: 0.15       # 15% for validation
+  test_ratio: 0.15      # 15% for testing
+  date_column: null     # Auto-detect date column
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - MAE                # Mean Absolute Error
+    - RMSE               # Root Mean Squared Error
+    - MAPE               # Mean Absolute Percentage Error
+    - R2                 # R-squared
+    - Directional_Accuracy  # Direction prediction accuracy
+
+# Cross-Validation Configuration
+cross_validation:
+  enabled: false        # Enable/disable cross-validation
+  n_splits: 5           # Number of CV folds
+  test_size: 30         # Test set size per fold
+  gap: 0                # Gap between train and test
+  expanding_window: true  # Use expanding window (vs rolling)
+
+# Model Training Configuration
+model_training:
+  epochs: 50            # Number of training epochs
+  batch_size: 32        # Batch size
+  early_stopping:
+    enabled: true
+    patience: 10        # Epochs to wait before stopping
+    monitor: val_loss   # Metric to monitor
+  learning_rate:
+    initial: 0.001       # Initial learning rate
+    scheduling:
+      enabled: true
+      factor: 0.5       # Factor to reduce LR by
+      patience: 5       # Epochs to wait before reducing LR
+

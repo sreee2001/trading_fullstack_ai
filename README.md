@@ -108,6 +108,8 @@ An end-to-end machine learning system for forecasting WTI crude oil, Brent crude
 - ✅ Automated pipeline orchestration
 - ✅ Scheduling & monitoring (APScheduler, CLI dashboard)
 - ✅ Notifications (Email, Slack)
+- 📚 [Comprehensive Documentation](docs/energy-price-forecasting/epics/epic-1/EPIC-1-COMPREHENSIVE-DOCUMENTATION.md)
+- 🧪 [Manual Test Cases](docs/energy-price-forecasting/test-cases/EPIC-1-MANUAL-TEST-CASES.md) (42 test cases)
 
 **Epic 2 Completed** (7 features, 39 user stories):
 - ✅ Feature engineering pipeline (technical indicators, lag features, seasonal decomposition)
@@ -117,6 +119,8 @@ An end-to-end machine learning system for forecasting WTI crude oil, Brent crude
 - ✅ Hyperparameter tuning framework (Grid Search, Random Search, Bayesian Optimization)
 - ✅ Model versioning & experiment tracking (MLflow integration)
 - ✅ Multi-horizon forecasting (1-day, 7-day, 30-day predictions)
+- 📚 [Comprehensive Documentation](docs/energy-price-forecasting/epics/epic-2/EPIC-2-COMPREHENSIVE-DOCUMENTATION.md)
+- 🧪 [Manual Test Cases](docs/energy-price-forecasting/test-cases/EPIC-2-MANUAL-TEST-CASES.md) (43 test cases)
 
 **Epic 3 Completed** (7 features, 33 user stories):
 - ✅ Walk-forward validation framework (expanding/rolling windows)

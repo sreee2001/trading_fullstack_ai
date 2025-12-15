@@ -25,9 +25,9 @@
 
 | Epic # | Epic Name | Features | Completed | Progress | Status | Priority | Documentation |
 |--------|-----------|----------|-----------|----------|--------|----------|----------------|
-| **1** | Data Foundation & Infrastructure | 6 | 6 | 100% | ✅ Complete | P0 | [Epic 1 Status](../EPIC-1-STATUS-REPORT.md) |
-| **2** | Core ML Model Development | 7 | 7 | 100% | ✅ Complete | P0 | [Epic 2 Celebration](../EPIC-2-CELEBRATION.md) |
-| **3** | Model Evaluation & Backtesting | 7 | 7 | 100% | ✅ Complete | P0 | [Test Cases](../EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
+| **1** | Data Foundation & Infrastructure | 6 | 6 | 100% | ✅ Complete | P0 | [Comprehensive Docs](../epics/epic-1/EPIC-1-COMPREHENSIVE-DOCUMENTATION.md) \| [Status](../status/epic-completion/EPIC-1-STATUS-REPORT.md) \| [Test Cases](../test-cases/EPIC-1-MANUAL-TEST-CASES.md) |
+| **2** | Core ML Model Development | 7 | 7 | 100% | ✅ Complete | P0 | [Comprehensive Docs](../epics/epic-2/EPIC-2-COMPREHENSIVE-DOCUMENTATION.md) \| [Celebration](../status/epic-completion/EPIC-2-CELEBRATION.md) \| [Test Cases](../test-cases/EPIC-2-MANUAL-TEST-CASES.md) |
+| **3** | Model Evaluation & Backtesting | 7 | 7 | 100% | ✅ Complete | P0 | [Test Cases](../test-cases/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) |
 | **4** | API Service Layer | 9 | 0 | 0% | 📋 Next | P1 | [Epic Breakdown](02-epic-breakdown.md) |
 | **5** | Visualization & User Interface | 8 | 0 | 0% | 📋 Planning | P1 | [Feature Breakdown](03-feature-breakdown.md) |
 | **6** | MLOps & Deployment Pipeline | 8 | 0 | 0% | 📋 Planning | P2 | [Project Tracker](04-project-tracker.md) |
@@ -57,7 +57,7 @@
 | 1.6 | Automated Data Pipeline Orchestration | 4d | ✅ Complete | 100% | AI | Dec 14 | Dec 14 | All 5 stories ✅ |
 | | **EPIC 1 TOTAL** | **18d** | ✅ **COMPLETE** | **100%** | | | | 6/6 features done |
 
-**Documentation**: [Epic 1 Status Report](../EPIC-1-STATUS-REPORT.md) | [Comprehensive Analysis](../EPIC-1-COMPREHENSIVE-ANALYSIS.md)
+**Documentation**: [Comprehensive Documentation](../epics/epic-1/EPIC-1-COMPREHENSIVE-DOCUMENTATION.md) | [Status Report](../status/epic-completion/EPIC-1-STATUS-REPORT.md) | [Comprehensive Analysis](../status/epic-completion/EPIC-1-COMPREHENSIVE-ANALYSIS.md) | [Test Cases](../test-cases/EPIC-1-MANUAL-TEST-CASES.md)
 
 ---
 
@@ -74,7 +74,7 @@
 | 2.7 | Multi-Horizon Forecasting Implementation | 4d | ✅ Complete | 100% | AI | Dec 14 | Dec 15 | All 5 stories ✅ |
 | | **EPIC 2 TOTAL** | **28d** | ✅ **COMPLETE** | **100%** | | | | 7/7 features done |
 
-**Documentation**: [Epic 2 Celebration](../EPIC-2-CELEBRATION.md) | [Manual Testing Guide](../EPIC-2-MANUAL-TESTING-GUIDE.md)
+**Documentation**: [Comprehensive Documentation](../epics/epic-2/EPIC-2-COMPREHENSIVE-DOCUMENTATION.md) | [Celebration](../status/epic-completion/EPIC-2-CELEBRATION.md) | [Kickoff](../epics/epic-2/EPIC-2-KICKOFF.md) | [Manual Testing Guide](../instructions/testing/EPIC-2-MANUAL-TESTING-GUIDE.md) | [Test Cases](../test-cases/EPIC-2-MANUAL-TEST-CASES.md)
 
 ---
 
@@ -91,7 +91,7 @@
 | 3.7 | Backtesting Visualization Tools | 4d | ✅ Complete | 100% | AI | Dec 15 | Dec 15 | All 6 stories ✅ |
 | | **EPIC 3 TOTAL** | **23d** | ✅ **COMPLETE** | **100%** | | | | 7/7 features done |
 
-**Documentation**: [Manual Test Cases](../EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) | [Feature 3.1](../FEATURE-3-1-COMPLETE.md) | [Feature 3.2](../FEATURE-3-2-COMPLETE.md) | [Feature 3.3](../FEATURE-3-3-COMPLETE.md) | [Feature 3.4](../FEATURE-3-4-COMPLETE.md) | [Feature 3.5](../FEATURE-3-5-COMPLETE.md) | [Feature 3.6](../FEATURE-3-6-COMPLETE.md) | [Feature 3.7](../FEATURE-3-7-COMPLETE.md)
+**Documentation**: [Test Cases](../test-cases/EPIC-3-EPIC-4-MANUAL-TEST-CASES.md) | [Feature 3.1](../status/feature-completion/FEATURE-3-1-COMPLETE.md) | [Feature 3.2](../status/feature-completion/FEATURE-3-2-COMPLETE.md) | [Feature 3.3](../status/feature-completion/FEATURE-3-3-COMPLETE.md) | [Feature 3.4](../status/feature-completion/FEATURE-3-4-COMPLETE.md) | [Feature 3.5](../status/feature-completion/FEATURE-3-5-COMPLETE.md) | [Feature 3.6](../status/feature-completion/FEATURE-3-6-COMPLETE.md) | [Feature 3.7](../status/feature-completion/FEATURE-3-7-COMPLETE.md)
 
 ---
 

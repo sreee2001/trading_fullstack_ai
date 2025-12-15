@@ -23,7 +23,7 @@ Usage:
     ```
 """
 
-from database.models import Base, Commodity, DataSource, PriceData
+from database.models import Base, Commodity, DataSource, PriceData, APIKey
 from database.utils import (
     DatabaseConfig,
     DatabaseManager,
@@ -38,6 +38,7 @@ __all__ = [
     "Commodity",
     "DataSource",
     "PriceData",
+    "APIKey",
     # Utils
     "DatabaseConfig",
     "DatabaseManager",

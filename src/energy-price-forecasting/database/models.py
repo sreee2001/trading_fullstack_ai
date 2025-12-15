@@ -25,6 +25,7 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint,
     Index,
+    Boolean,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -224,5 +225,53 @@ class PriceData(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
+
+class APIKey(Base):
+    """
+    API Key model for authentication.
+    
+    Stores hashed API keys for user authentication.
+    Keys are never stored in plain text - only hashed values are stored.
+    
+    Attributes:
+        id: Primary key
+        key_hash: Hashed API key (bcrypt hash)
+        user_id: User identifier (optional, for future user management)
+        name: Optional name/description for the key
+        created_at: Timestamp when key was created
+        expires_at: Optional expiration timestamp
+        is_active: Whether the key is active (can be revoked)
+        last_used_at: Timestamp when key was last used
+    """
+    
+    __tablename__ = "api_keys"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    key_hash = Column(String(255), unique=True, nullable=False, index=True)
+    user_id = Column(String(100), nullable=True, index=True)
+    name = Column(String(100), nullable=True)
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.current_timestamp(),
+        nullable=False
+    )
+    expires_at = Column(DateTime(timezone=True), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False, index=True)
+    last_used_at = Column(DateTime(timezone=True), nullable=True)
+    
+    def __repr__(self) -> str:
+        return f"<APIKey(id={self.id}, user_id='{self.user_id}', is_active={self.is_active})>"
+    
+    def to_dict(self) -> dict:
+        """Convert model instance to dictionary."""
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "name": self.name,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+            "is_active": self.is_active,
+            "last_used_at": self.last_used_at.isoformat() if self.last_used_at else None,
+        }
 
 

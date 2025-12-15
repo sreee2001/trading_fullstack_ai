@@ -15,8 +15,10 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  Scatter,
 } from 'recharts';
 import type { PricePoint, Prediction } from '../../types/api';
+import type { TradingSignal } from '../../types/trading';
 import { format } from 'date-fns';
 import './CombinedChart.css';
 
@@ -25,6 +27,8 @@ interface CombinedChartProps {
   predictions: Prediction[];
   commodity: string;
   height?: number;
+  signals?: TradingSignal[];
+  showSignals?: boolean;
 }
 
 const CombinedChart: React.FC<CombinedChartProps> = ({
@@ -32,6 +36,8 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
   predictions,
   commodity,
   height = 500,
+  signals = [],
+  showSignals = false,
 }) => {
   // Find the last historical date
   const lastHistoricalDate = historicalData.length > 0
@@ -62,6 +68,27 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
   const chartData = [...historicalChartData, ...forecastChartData].sort((a, b) =>
     new Date(a.date).getTime() - new Date(b.date).getTime()
   );
+
+  // Prepare signal data for scatter plot
+  const buySignals = showSignals
+    ? signals
+        .filter((s) => s.signal === 'buy')
+        .map((s) => ({
+          date: s.date,
+          price: s.price,
+          signal: 'buy',
+        }))
+    : [];
+
+  const sellSignals = showSignals
+    ? signals
+        .filter((s) => s.signal === 'sell')
+        .map((s) => ({
+          date: s.date,
+          price: s.price,
+          signal: 'sell',
+        }))
+    : [];
 
   return (
     <div className="combined-chart">
@@ -137,8 +164,64 @@ const CombinedChart: React.FC<CombinedChartProps> = ({
             name="Upper Bound"
             connectNulls={false}
           />
+          {showSignals && buySignals.length > 0 && (
+            <Scatter
+              data={buySignals}
+              fill="#10b981"
+              shape={(props: { cx?: number; cy?: number }) => (
+                <g>
+                  <circle cx={props.cx} cy={props.cy} r={6} fill="#10b981" />
+                  <text
+                    x={props.cx}
+                    y={(props.cy || 0) - 10}
+                    textAnchor="middle"
+                    fontSize="16"
+                    fill="#10b981"
+                    fontWeight="bold"
+                  >
+                    ↑
+                  </text>
+                </g>
+              )}
+              name="Buy Signal"
+            />
+          )}
+          {showSignals && sellSignals.length > 0 && (
+            <Scatter
+              data={sellSignals}
+              fill="#ef4444"
+              shape={(props: { cx?: number; cy?: number }) => (
+                <g>
+                  <circle cx={props.cx} cy={props.cy} r={6} fill="#ef4444" />
+                  <text
+                    x={props.cx}
+                    y={(props.cy || 0) + 20}
+                    textAnchor="middle"
+                    fontSize="16"
+                    fill="#ef4444"
+                    fontWeight="bold"
+                  >
+                    ↓
+                  </text>
+                </g>
+              )}
+              name="Sell Signal"
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
+      {showSignals && signals.length > 0 && (
+        <div className="signals-legend">
+          <div className="signal-item">
+            <span className="signal-indicator buy">↑</span>
+            <span>Buy Signal ({signals.filter((s) => s.signal === 'buy').length})</span>
+          </div>
+          <div className="signal-item">
+            <span className="signal-indicator sell">↓</span>
+            <span>Sell Signal ({signals.filter((s) => s.signal === 'sell').length})</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -11,8 +11,10 @@ import HistoricalPriceChart from '../components/charts/HistoricalPriceChart';
 import ComparisonChart from '../components/charts/ComparisonChart';
 import { forecastService } from '../services/forecastService';
 import { historicalService } from '../services/historicalService';
+import { generateSignals } from '../services/signalService';
 import { useApp } from '../context/AppContext';
 import type { ForecastResponse, HistoricalDataResponse } from '../types/api';
+import type { TradingSignal } from '../types/trading';
 import './Forecast.css';
 
 const Forecast: React.FC = () => {
@@ -26,6 +28,8 @@ const Forecast: React.FC = () => {
   const [forecast, setForecast] = useState<ForecastResponse | null>(null);
   const [historicalData, setHistoricalData] = useState<HistoricalDataResponse | null>(null);
   const [actualData, setActualData] = useState<HistoricalDataResponse | null>(null);
+  const [signals, setSignals] = useState<TradingSignal[]>([]);
+  const [showSignals, setShowSignals] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showCombined, setShowCombined] = useState<boolean>(false);
   const [showComparison, setShowComparison] = useState<boolean>(false);
@@ -72,6 +76,15 @@ const Forecast: React.FC = () => {
       setForecast(forecastResponse);
       setHistoricalData(historicalResponse);
       setActualData(actualResponse);
+
+      // Generate trading signals
+      const generatedSignals = generateSignals(
+        forecastResponse.predictions,
+        [...historicalResponse.data, ...actualResponse.data],
+        'threshold',
+        0.02
+      );
+      setSignals(generatedSignals);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate forecast');
     } finally {
@@ -159,6 +172,16 @@ const Forecast: React.FC = () => {
                 {showComparison ? 'Show Forecast Only' : 'Show Forecast vs Actual'}
               </button>
             )}
+            {signals.length > 0 && (
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={showSignals}
+                  onChange={(e) => setShowSignals(e.target.checked)}
+                />
+                Show Trading Signals ({signals.length})
+              </label>
+            )}
           </div>
 
           {showComparison && actualData ? (
@@ -172,6 +195,8 @@ const Forecast: React.FC = () => {
               historicalData={historicalData.data}
               predictions={forecast.predictions}
               commodity={forecast.commodity}
+              signals={signals}
+              showSignals={showSignals}
             />
           ) : (
             <ForecastChart

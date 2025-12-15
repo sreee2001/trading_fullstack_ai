@@ -15,3 +15,31 @@
   font-size: 1.25rem;
 }
 
+.signals-legend {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+}
+
+.signal-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.signal-indicator {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.signal-indicator.buy {
+  color: #10b981;
+}
+
+.signal-indicator.sell {
+  color: #ef4444;
+}
+

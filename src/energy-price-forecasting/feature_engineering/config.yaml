@@ -1,0 +1,82 @@
+# Feature Engineering Configuration
+# Energy Price Forecasting System
+# Version: 1.0
+
+# Technical Indicators Configuration
+technical_indicators:
+  enabled: true
+  
+  # Simple Moving Average windows (in days)
+  sma_windows:
+    - 5
+    - 10
+    - 20
+    - 50
+    - 200
+  
+  # Exponential Moving Average windows (in days)
+  ema_windows:
+    - 5
+    - 10
+    - 20
+    - 50
+    - 200
+  
+  # Relative Strength Index period
+  rsi_period: 14
+  
+  # MACD parameters [fast_period, slow_period, signal_period]
+  macd_params:
+    - 12
+    - 26
+    - 9
+  
+  # Bollinger Bands period
+  bb_period: 20
+  
+  # Average True Range period
+  atr_period: 14
+
+# Time-Based Features Configuration
+time_features:
+  enabled: true
+  
+  # Lag periods (in days)
+  lag_periods:
+    - 1
+    - 7
+    - 30
+  
+  # Rolling window sizes (in days)
+  rolling_windows:
+    - 7
+    - 30
+    - 90
+  
+  # Rolling statistics to calculate
+  rolling_statistics:
+    - mean
+    - std
+    - min
+    - max
+  
+  # Seasonal decomposition period (null = auto-detect)
+  seasonal_period: null
+  
+  # Seasonal model: 'additive' or 'multiplicative'
+  seasonal_model: additive
+
+# Date Features Configuration
+date_features:
+  enabled: true
+  # Automatically extracts: day_of_week, month, quarter, year, 
+  # day_of_month, week_of_year, is_weekend
+
+# Preprocessing Configuration
+preprocessing:
+  # How to handle missing values: 'forward_fill', 'drop', 'mean', 'zero'
+  handle_missing: forward_fill
+  
+  # Drop rows with more than this percentage of NaN values
+  drop_na_threshold: 0.5
+

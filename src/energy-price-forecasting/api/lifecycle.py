@@ -10,12 +10,16 @@ import logging
 
 from api.config import get_settings
 from api.logging_config import get_logger
+from api.services.model_service import get_model_service
+from api.cache.redis_client import get_redis_client
 
 logger = get_logger(__name__)
 
 # Global references to resources
 _db_manager: Optional[object] = None
 _ml_models: dict = {}
+_redis_client: Optional[object] = None
+_redis_client: Optional[object] = None
 
 
 async def startup_event():
@@ -62,26 +66,30 @@ async def startup_event():
         else:
             logger.warning("Database URL not configured. Skipping database initialization.")
         
-        # Optionally load ML models into memory
-        # Models can be preloaded at startup or loaded on-demand (lazy loading)
-        from api.services.model_service import get_model_service
-        
-        model_service = get_model_service()
-        
-        # Check if preloading is enabled
-        if hasattr(settings, 'preload_models_at_startup') and settings.preload_models_at_startup:
-            logger.info("Preloading ML models at startup...")
-            try:
-                model_service.preload_models(
-                    commodities=["WTI", "BRENT", "NG"],
-                    model_types=["lstm"]  # Can be extended
-                )
-            except Exception as e:
-                logger.warning(f"Model preloading failed: {e}. Models will be loaded on-demand.")
+        # Preload ML models if configured
+        if settings.preload_models_at_startup:
+            logger.info("Preloading ML models...")
+            model_service = get_model_service()
+            model_service.preload_models(
+                commodities=settings.preload_commodities if hasattr(settings, 'preload_commodities') else ["WTI", "BRENT", "NG"],
+                model_types=settings.preload_model_types if hasattr(settings, 'preload_model_types') else ["lstm"]
+            )
+            _ml_models = model_service.get_cached_models()
         else:
-            logger.info("ML models will be loaded on-demand (lazy loading)")
+            logger.info("ML models will be loaded on-demand")
+            _ml_models = {}
         
-        _ml_models = model_service.models
+        # Initialize Redis client
+        logger.info("Initializing Redis client...")
+        try:
+            _redis_client = get_redis_client()
+            if _redis_client.is_available:
+                logger.info("Redis client initialized successfully")
+            else:
+                logger.warning("Redis is not available. Caching and rate limiting will be disabled.")
+        except Exception as e:
+            logger.warning(f"Failed to initialize Redis client: {e}. Caching and rate limiting will be disabled.")
+            _redis_client = None
         
         logger.info("Startup complete")
         
@@ -98,9 +106,10 @@ async def shutdown_event():
     Cleans up:
     - Database connection pool
     - ML models (if loaded)
+    - Redis connection
     - Other application resources
     """
-    global _db_manager, _ml_models
+    global _db_manager, _ml_models, _redis_client
     
     logger.info("Shutting down Energy Price Forecasting API...")
     
@@ -120,6 +129,17 @@ async def shutdown_event():
         if _ml_models:
             logger.info("Clearing ML models from memory...")
             _ml_models.clear()
+        
+        # Close Redis connection
+        if _redis_client:
+            logger.info("Closing Redis connection...")
+            try:
+                _redis_client.close()
+                logger.info("Redis connection closed")
+            except Exception as e:
+                logger.error(f"Error closing Redis connection: {e}")
+            finally:
+                _redis_client = None
         
         logger.info("Shutdown complete")
         

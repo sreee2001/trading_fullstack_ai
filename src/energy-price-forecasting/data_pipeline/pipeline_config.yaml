@@ -1,0 +1,107 @@
+# Data Pipeline Configuration
+# Energy Price Forecasting System
+# Version: 1.0
+
+pipeline:
+  name: "Energy Price Data Pipeline"
+  version: "1.0"
+  description: "Automated pipeline for fetching, validating, and storing energy price data"
+
+# Schedule configuration
+schedule:
+  enabled: true
+  time: "06:00"  # 6:00 AM
+  timezone: "America/New_York"
+  frequency: "daily"  # daily, weekly, monthly
+
+# Data sources configuration
+data_sources:
+  eia:
+    enabled: true
+    commodities:
+      - "WTI_CRUDE"
+      - "NATURAL_GAS"
+    description: "U.S. Energy Information Administration"
+  
+  fred:
+    enabled: true
+    series:
+      - "DCOILWTICO"     # WTI Crude Oil
+      - "DCOILBRENTEU"   # Brent Crude Oil
+      - "DHHNGSP"        # Natural Gas
+    description: "Federal Reserve Economic Data"
+  
+  yahoo_finance:
+    enabled: true
+    tickers:
+      - "CL=F"   # WTI Crude Oil Futures
+      - "BZ=F"   # Brent Crude Oil Futures
+      - "NG=F"   # Natural Gas Futures
+    description: "Yahoo Finance API"
+
+# Date range configuration
+date_range:
+  mode: "incremental"  # incremental, full_refresh, backfill
+  lookback_days: 30
+  max_history_days: 3650  # 10 years for full refresh
+
+# Validation configuration
+validation:
+  quality_threshold: 70  # Minimum acceptable quality percentage
+  exclude_weekends: true # Exclude weekends from completeness calculation
+  outlier_detection: true
+  cross_source_validation: true
+
+# Storage configuration
+storage:
+  batch_size: 1000
+  upsert: true  # Update existing records, insert new ones
+  create_backup: false
+
+# Notification configuration
+notifications:
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    use_tls: true
+    from_email: "pipeline@example.com"
+    to_emails:
+      - "admin@example.com"
+    send_on_success: false
+    send_on_failure: true
+    send_on_partial: true
+  
+  slack:
+    enabled: false
+    webhook_url: ""
+    send_on_success: false
+    send_on_failure: true
+    send_on_partial: true
+
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "logs/pipeline.log"
+  max_file_size_mb: 100
+  backup_count: 10
+  console_output: true
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Error handling configuration
+error_handling:
+  retry_attempts: 3
+  retry_backoff: 2  # seconds (exponential backoff)
+  continue_on_partial_failure: true
+  abort_on_critical: true
+  save_failed_batches: true
+
+# Performance configuration
+performance:
+  parallel_fetch: true
+  max_workers: 3
+  connection_timeout: 30  # seconds
+  read_timeout: 30  # seconds
+  cache_enabled: true
+  cache_ttl_minutes: 5
+

@@ -15,6 +15,7 @@ Version: 1.0
 from .lstm_model import LSTMForecaster
 from .data_preparation import SequenceDataPreparator
 from .model_architecture import create_lstm_model, create_bidirectional_lstm, create_stacked_lstm
+from .integration import LSTMWithFeatures
 
 __version__ = "1.0.0"
 
@@ -24,5 +25,6 @@ __all__ = [
     'create_lstm_model',
     'create_bidirectional_lstm',
     'create_stacked_lstm',
+    'LSTMWithFeatures',
 ]
 

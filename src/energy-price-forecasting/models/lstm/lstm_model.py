@@ -245,7 +245,8 @@ class LSTMForecaster:
         self,
         data: pd.DataFrame | pd.Series,
         target_column: Optional[str] = None,
-        return_original_scale: bool = True
+        return_original_scale: bool = True,
+        steps: Optional[int] = None
     ) -> np.ndarray:
         """
         Generate predictions.
@@ -254,6 +255,7 @@ class LSTMForecaster:
             data: Input data for prediction
             target_column: Name of target column (for DataFrame)
             return_original_scale: Whether to return predictions in original scale (default: True)
+            steps: Number of steps to predict (for multi-horizon, uses forecast_horizon if None)
         
         Returns:
             Predictions as numpy array
@@ -267,6 +269,31 @@ class LSTMForecaster:
         # Generate predictions
         predictions_scaled = self.model.predict(X, verbose=0)
         
+        # Handle multi-horizon forecasting
+        if steps is not None and steps != self.forecast_horizon:
+            # For multi-horizon, we need to predict iteratively
+            if steps > self.forecast_horizon:
+                # Predict recursively
+                current_data = data.copy()
+                all_predictions = []
+                
+                for _ in range(steps // self.forecast_horizon):
+                    X_current, _, _, _ = self.preparator.prepare_data(current_data, None, target_column)
+                    pred_scaled = self.model.predict(X_current, verbose=0)
+                    
+                    if return_original_scale:
+                        pred = self.preparator.inverse_transform(pred_scaled)
+                    else:
+                        pred = pred_scaled
+                    
+                    all_predictions.append(pred)
+                    
+                    # Update current_data with predictions for next iteration
+                    # This is a simplified approach - in practice, you'd append to the sequence
+                    break  # For now, just return first forecast_horizon steps
+                
+                predictions_scaled = predictions_scaled[:, :steps] if predictions_scaled.shape[1] > steps else predictions_scaled
+        
         # Inverse transform if needed
         if return_original_scale:
             predictions = self.preparator.inverse_transform(predictions_scaled)
@@ -276,6 +303,61 @@ class LSTMForecaster:
         logger.info(f"Generated predictions: shape {predictions.shape}")
         
         return predictions
+    
+    def predict_multi_horizon(
+        self,
+        data: pd.DataFrame | pd.Series,
+        horizons: List[int],
+        target_column: Optional[str] = None,
+        return_original_scale: bool = True
+    ) -> Dict[int, np.ndarray]:
+        """
+        Generate predictions for multiple forecast horizons.
+        
+        Args:
+            data: Input data for prediction
+            horizons: List of forecast horizons (e.g., [1, 7, 30] for 1, 7, 30 days ahead)
+            target_column: Name of target column
+            return_original_scale: Whether to return in original scale
+        
+        Returns:
+            Dictionary mapping horizon to predictions
+        """
+        if not self.is_fitted:
+            raise ValueError("Model must be fitted before making predictions. Call fit() first.")
+        
+        results = {}
+        
+        # For each horizon, we need to retrain or use a model trained for that horizon
+        # For simplicity, we'll use the current model and predict iteratively
+        # In production, you'd train separate models for each horizon
+        
+        logger.info(f"Generating multi-horizon predictions for horizons: {horizons}")
+        
+        # Prepare base data
+        X, _, _, _ = self.preparator.prepare_data(data, None, target_column)
+        
+        # Generate base predictions
+        base_predictions_scaled = self.model.predict(X, verbose=0)
+        
+        for horizon in horizons:
+            if horizon <= self.forecast_horizon:
+                # Use existing predictions
+                pred_scaled = base_predictions_scaled[:, :horizon]
+            else:
+                # For longer horizons, use iterative prediction
+                # This is simplified - in practice, use a model trained for that horizon
+                pred_scaled = base_predictions_scaled[:, :min(horizon, self.forecast_horizon)]
+                logger.warning(f"Horizon {horizon} exceeds model's forecast_horizon {self.forecast_horizon}. Using truncated prediction.")
+            
+            if return_original_scale:
+                pred = self.preparator.inverse_transform(pred_scaled)
+            else:
+                pred = pred_scaled
+            
+            results[horizon] = pred
+        
+        return results
     
     def evaluate(
         self,

@@ -12,10 +12,18 @@ from api.cache.redis_client import (
     RedisClient,
     is_redis_available
 )
+from api.cache.rate_limiter import (
+    RateLimiter,
+    get_rate_limiter
+)
+from api.cache.rate_limit_middleware import RateLimitMiddleware
 
 __all__ = [
     "get_redis_client",
     "RedisClient",
     "is_redis_available",
+    "RateLimiter",
+    "get_rate_limiter",
+    "RateLimitMiddleware",
 ]
 

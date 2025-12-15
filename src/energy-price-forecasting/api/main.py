@@ -45,6 +45,14 @@ app.add_middleware(
 from api.logging_config import RequestResponseLogger
 app.add_middleware(RequestResponseLogger)
 
+# Add rate limiting middleware
+from api.cache.rate_limit_middleware import RateLimitMiddleware
+app.add_middleware(
+    RateLimitMiddleware,
+    requests_per_minute=100,
+    exempt_paths=["/health", "/docs", "/api/docs", "/api/redoc", "/api/openapi.json"]
+)
+
 # Register startup and shutdown event handlers
 from api.lifecycle import startup_event, shutdown_event
 

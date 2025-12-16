@@ -45,30 +45,32 @@ const Models: React.FC = () => {
   const aggregateMetrics = () => {
     if (models.length === 0) return null;
 
-    const metricsWithValues = models.filter((m) => m.metrics.rmse !== undefined);
+    const metricsWithValues = models.filter((m) => m.metrics?.rmse !== undefined);
     if (metricsWithValues.length === 0) return null;
 
     const avgRmse =
-      metricsWithValues.reduce((sum, m) => sum + (m.metrics.rmse ?? 0), 0) /
+      metricsWithValues.reduce((sum, m) => sum + (m.metrics?.rmse ?? 0), 0) /
       metricsWithValues.length;
 
     const avgMae =
-      metricsWithValues.reduce((sum, m) => sum + (m.metrics.mae ?? 0), 0) /
+      metricsWithValues.reduce((sum, m) => sum + (m.metrics?.mae ?? 0), 0) /
       metricsWithValues.length;
 
+    const directionalAccuracyModels = models.filter((m) => m.metrics?.directional_accuracy !== undefined);
     const avgDirectionalAccuracy =
-      models
-        .filter((m) => m.metrics.directional_accuracy !== undefined)
-        .reduce(
-          (sum, m) => sum + (m.metrics.directional_accuracy ?? 0),
-          0
-        ) / models.filter((m) => m.metrics.directional_accuracy !== undefined).length;
+      directionalAccuracyModels.length > 0
+        ? directionalAccuracyModels.reduce(
+            (sum, m) => sum + (m.metrics?.directional_accuracy ?? 0),
+            0
+          ) / directionalAccuracyModels.length
+        : 0;
 
+    const sharpeRatioModels = models.filter((m) => m.metrics?.sharpe_ratio !== undefined);
     const avgSharpeRatio =
-      models
-        .filter((m) => m.metrics.sharpe_ratio !== undefined)
-        .reduce((sum, m) => sum + (m.metrics.sharpe_ratio ?? 0), 0) /
-      models.filter((m) => m.metrics.sharpe_ratio !== undefined).length;
+      sharpeRatioModels.length > 0
+        ? sharpeRatioModels.reduce((sum, m) => sum + (m.metrics?.sharpe_ratio ?? 0), 0) /
+          sharpeRatioModels.length
+        : 0;
 
     return {
       avgRmse,
@@ -119,24 +121,28 @@ const Models: React.FC = () => {
             <div className="metrics-grid">
               <MetricCard
                 title="Average RMSE"
-                value={aggregate.avgRmse}
+                value={aggregate.avgRmse.toFixed(4)}
                 color="blue"
               />
               <MetricCard
                 title="Average MAE"
-                value={aggregate.avgMae}
+                value={aggregate.avgMae.toFixed(4)}
                 color="green"
               />
-              <MetricCard
-                title="Average Directional Accuracy"
-                value={`${(aggregate.avgDirectionalAccuracy * 100).toFixed(1)}%`}
-                color="purple"
-              />
-              <MetricCard
-                title="Average Sharpe Ratio"
-                value={aggregate.avgSharpeRatio}
-                color="yellow"
-              />
+              {aggregate.avgDirectionalAccuracy > 0 && (
+                <MetricCard
+                  title="Average Directional Accuracy"
+                  value={`${(aggregate.avgDirectionalAccuracy * 100).toFixed(1)}%`}
+                  color="purple"
+                />
+              )}
+              {aggregate.avgSharpeRatio !== 0 && (
+                <MetricCard
+                  title="Average Sharpe Ratio"
+                  value={aggregate.avgSharpeRatio.toFixed(2)}
+                  color="yellow"
+                />
+              )}
             </div>
           )}
 

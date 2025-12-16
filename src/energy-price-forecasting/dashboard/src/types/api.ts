@@ -65,7 +65,8 @@ export interface ModelMetrics {
   rmse?: number;
   mae?: number;
   mape?: number;
-  r_squared?: number;
+  r2?: number;  // API uses r2, not r_squared
+  r_squared?: number;  // Keep for backward compatibility
   directional_accuracy?: number;
   sharpe_ratio?: number;
   sortino_ratio?: number;
@@ -76,22 +77,25 @@ export interface ModelMetrics {
 
 export interface ModelInfo {
   model_id: string;
+  model_name?: string;
   commodity: string;
   model_type: string;
   version: string;
   stage: string;
-  training_date: string;
-  metrics: ModelMetrics;
-  tags?: Record<string, string>;
-  run_id?: string;
-  experiment_id?: string;
+  training_date?: string | null;
+  created_at?: string | null;
+  metrics?: ModelMetrics | null;
+  tags?: Record<string, string> | null;
+  run_id?: string | null;
+  experiment_id?: string | null;
+  description?: string | null;
   parameters?: Record<string, unknown>;
 }
 
 export interface ModelsListResponse {
   models: ModelInfo[];
   total_count: number;
-  filter_commodity?: string;
+  commodity_filter?: string | null;
 }
 
 // Backtest Types

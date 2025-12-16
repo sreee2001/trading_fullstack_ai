@@ -30,20 +30,20 @@ const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({ models }) =
           bValue = b.model_type;
           break;
         case 'rmse':
-          aValue = a.metrics.rmse ?? Infinity;
-          bValue = b.metrics.rmse ?? Infinity;
+          aValue = a.metrics?.rmse ?? Infinity;
+          bValue = b.metrics?.rmse ?? Infinity;
           break;
         case 'mae':
-          aValue = a.metrics.mae ?? Infinity;
-          bValue = b.metrics.mae ?? Infinity;
+          aValue = a.metrics?.mae ?? Infinity;
+          bValue = b.metrics?.mae ?? Infinity;
           break;
         case 'sharpe_ratio':
-          aValue = a.metrics.sharpe_ratio ?? -Infinity;
-          bValue = b.metrics.sharpe_ratio ?? -Infinity;
+          aValue = a.metrics?.sharpe_ratio ?? -Infinity;
+          bValue = b.metrics?.sharpe_ratio ?? -Infinity;
           break;
         case 'directional_accuracy':
-          aValue = a.metrics.directional_accuracy ?? 0;
-          bValue = b.metrics.directional_accuracy ?? 0;
+          aValue = a.metrics?.directional_accuracy ?? 0;
+          bValue = b.metrics?.directional_accuracy ?? 0;
           break;
       }
 
@@ -77,10 +77,10 @@ const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({ models }) =
 
   // Find best model (lowest RMSE)
   const bestModelId = useMemo(() => {
-    const modelWithRmse = models.filter((m) => m.metrics.rmse !== undefined);
+    const modelWithRmse = models.filter((m) => m.metrics?.rmse !== undefined);
     if (modelWithRmse.length === 0) return null;
     return modelWithRmse.reduce((best, current) =>
-      (current.metrics.rmse ?? Infinity) < (best.metrics.rmse ?? Infinity) ? current : best
+      (current.metrics?.rmse ?? Infinity) < (best.metrics?.rmse ?? Infinity) ? current : best
     ).model_id;
   }, [models]);
 
@@ -122,15 +122,15 @@ const ModelComparisonTable: React.FC<ModelComparisonTableProps> = ({ models }) =
                     {model.commodity} v{model.version}
                   </div>
                 </td>
-                <td>{model.metrics.rmse?.toFixed(4) ?? 'N/A'}</td>
-                <td>{model.metrics.mae?.toFixed(4) ?? 'N/A'}</td>
+                <td>{model.metrics?.rmse?.toFixed(4) ?? 'N/A'}</td>
+                <td>{model.metrics?.mae?.toFixed(4) ?? 'N/A'}</td>
                 <td>
-                  {model.metrics.directional_accuracy
+                  {model.metrics?.directional_accuracy
                     ? `${(model.metrics.directional_accuracy * 100).toFixed(1)}%`
                     : 'N/A'}
                 </td>
-                <td>{model.metrics.sharpe_ratio?.toFixed(2) ?? 'N/A'}</td>
-                <td>{model.metrics.r_squared?.toFixed(3) ?? 'N/A'}</td>
+                <td>{model.metrics?.sharpe_ratio?.toFixed(2) ?? 'N/A'}</td>
+                <td>{(model.metrics?.r2 ?? model.metrics?.r_squared)?.toFixed(3) ?? 'N/A'}</td>
                 <td>
                   <span className={`stage-badge stage-${model.stage.toLowerCase()}`}>
                     {model.stage}

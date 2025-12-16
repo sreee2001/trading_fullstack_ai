@@ -25,10 +25,23 @@ interface AppContextType {
   clearAuth: () => void;
 }
 
+// Get API key from environment variable or localStorage
+const getInitialApiKey = (): string | null => {
+  // Check environment variable first (Vite uses import.meta.env)
+  const envApiKey = import.meta.env.VITE_API_KEY;
+  if (envApiKey && envApiKey.trim() && envApiKey !== 'your_api_key_here') {
+    // Store in localStorage for consistency
+    localStorage.setItem('apiKey', envApiKey.trim());
+    return envApiKey.trim();
+  }
+  // Fallback to localStorage
+  return localStorage.getItem('apiKey');
+};
+
 // Initial State
 const initialState: AppState = {
-  apiKey: localStorage.getItem('apiKey') || null,
-  isAuthenticated: !!localStorage.getItem('apiKey'),
+  apiKey: getInitialApiKey(),
+  isAuthenticated: !!getInitialApiKey(),
   theme: (localStorage.getItem('theme') as 'light' | 'dark') || 'light',
   selectedCommodity: null,
 };

@@ -16,8 +16,10 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { state, clearAuth } = useApp();
+  const { state, setApiKey, clearAuth } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [apiKeyValue, setApiKeyValue] = useState('');
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -27,6 +29,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  const handleApiKeySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (apiKeyValue.trim()) {
+      setApiKey(apiKeyValue.trim());
+      setApiKeyValue('');
+      setShowApiKeyInput(false);
+    }
   };
 
   return (
@@ -80,7 +91,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   Logout
                 </button>
               ) : (
-                <span className="auth-status">Not Authenticated</span>
+                <div className="auth-section">
+                  <input
+                    type="text"
+                    placeholder="Enter API key (epf_...)"
+                    value={apiKeyValue}
+                    onChange={(e) => setApiKeyValue(e.target.value)}
+                    className="api-key-input"
+                  />
+                  <button 
+                    onClick={() => {
+                      if (apiKeyValue.trim()) {
+                        setApiKey(apiKeyValue.trim());
+                        setApiKeyValue('');
+                        closeMobileMenu();
+                      }
+                    }}
+                    className="btn-primary"
+                  >
+                    Save API Key
+                  </button>
+                </div>
               )}
             </div>
           </nav>
@@ -90,7 +121,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Logout
               </button>
             ) : (
-              <span className="auth-status">Not Authenticated</span>
+              <div className="auth-section">
+                {!showApiKeyInput ? (
+                  <button 
+                    onClick={() => setShowApiKeyInput(true)} 
+                    className="btn-secondary"
+                  >
+                    Enter API Key
+                  </button>
+                ) : (
+                  <form onSubmit={handleApiKeySubmit} className="api-key-form">
+                    <input
+                      type="text"
+                      placeholder="Enter API key (epf_...)"
+                      value={apiKeyValue}
+                      onChange={(e) => setApiKeyValue(e.target.value)}
+                      className="api-key-input"
+                      autoFocus
+                    />
+                    <button type="submit" className="btn-primary">Save</button>
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        setShowApiKeyInput(false);
+                        setApiKeyValue('');
+                      }}
+                      className="btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                )}
+              </div>
             )}
           </div>
         </div>

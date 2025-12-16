@@ -251,6 +251,7 @@ class ModelService:
         Create a placeholder model for testing.
         
         In production, this would load actual trained models.
+        This placeholder uses historical data to generate more realistic forecasts.
         """
         # This is a placeholder - actual model loading will be implemented
         # in Story 4.2.3 with MLflow integration
@@ -265,27 +266,92 @@ class ModelService:
                 self.commodity = commodity
                 self.model_type = model_type
                 self.is_fitted = True  # Placeholder models are "fitted"
+                self._base_price = None
+                self._trend = None
+            
+            def _get_recent_price_data(self):
+                """Get recent price data to base forecasts on."""
+                try:
+                    from database.operations import get_latest_price
+                    from datetime import datetime, timedelta
+                    
+                    # Try to get latest price from EIA source
+                    latest = get_latest_price(commodity, "EIA")
+                    if latest:
+                        timestamp, price = latest
+                        self._base_price = float(price)
+                        
+                        # Get price from 30 days ago to calculate trend
+                        from database.operations import get_price_data
+                        thirty_days_ago = timestamp - timedelta(days=30)
+                        historical_df = get_price_data(
+                            commodity_symbol=commodity,
+                            source_name="EIA",
+                            start_date=thirty_days_ago,
+                            end_date=timestamp,
+                            limit=30
+                        )
+                        
+                        if not historical_df.empty and len(historical_df) > 1:
+                            # Calculate simple trend (price change over 30 days)
+                            old_price = float(historical_df.iloc[0]['price'])
+                            price_change = self._base_price - old_price
+                            self._trend = price_change / 30.0  # Daily trend
+                        else:
+                            self._trend = 0.0
+                        
+                        logger.info(f"Using historical data: base_price={self._base_price}, trend={self._trend}")
+                        return True
+                except Exception as e:
+                    logger.debug(f"Could not get historical data: {e}")
+                
+                # Fallback to default prices
+                if self._base_price is None:
+                    self._base_price = 75.0 if commodity == "WTI" else 80.0 if commodity == "BRENT" else 3.0
+                    self._trend = 0.0
+                return False
             
             def predict(self, steps: int = 1, return_conf_int: bool = False):
-                """Generate placeholder predictions."""
+                """Generate placeholder predictions with realistic variation."""
                 import pandas as pd
                 import numpy as np
                 
-                # Generate dummy predictions
-                base_price = 75.0 if commodity == "WTI" else 80.0 if commodity == "BRENT" else 3.0
-                predictions = pd.Series([base_price] * steps)
+                # Get base price from historical data if available
+                if self._base_price is None:
+                    self._get_recent_price_data()
+                
+                # Generate predictions with trend and random variation
+                predictions = []
+                for i in range(steps):
+                    # Start from base price, add trend, add small random variation
+                    price = self._base_price + (self._trend * i)
+                    # Add small random walk (daily volatility ~1-2%)
+                    volatility = self._base_price * 0.015  # 1.5% volatility
+                    random_change = np.random.normal(0, volatility * 0.5)
+                    price = price + random_change
+                    # Ensure price stays positive and reasonable
+                    price = max(price, self._base_price * 0.5)  # Don't go below 50% of base
+                    predictions.append(price)
+                
+                predictions_series = pd.Series(predictions)
                 
                 if return_conf_int:
-                    # Generate confidence intervals
-                    conf_lower = predictions * 0.95
-                    conf_upper = predictions * 1.05
+                    # Generate confidence intervals (wider as we forecast further out)
+                    conf_lower = []
+                    conf_upper = []
+                    for i, pred in enumerate(predictions):
+                        # Confidence widens with horizon (5% + 0.5% per day)
+                        conf_width = 0.05 + (i * 0.005)
+                        conf_lower.append(pred * (1 - conf_width))
+                        conf_upper.append(pred * (1 + conf_width))
+                    
                     conf_int = pd.DataFrame({
                         'lower': conf_lower,
                         'upper': conf_upper
                     })
-                    return predictions, conf_int
+                    return predictions_series, conf_int
                 
-                return predictions
+                return predictions_series
         
         return PlaceholderModel(commodity, model_type)
     
